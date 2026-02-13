@@ -325,7 +325,8 @@
           const [currentQuestion, setCurrentQuestion] = useState(null);
           const [answers, setAnswers] = useState({});
           const [showResult, setShowResult] = useState(false);
-          const [totalChecks, setTotalChecks] = useState(1247);
+          // Generate random check count between 800-2500 on each page load
+          const [totalChecks, setTotalChecks] = useState(() => Math.floor(Math.random() * (2500 - 800 + 1)) + 800);
 
           const questions = [
             {
@@ -381,6 +382,41 @@
               emoji: '📝',
               weight: -2,
               description: '(being honest...)'
+            },
+            {
+              id: 'cough',
+              question: 'Do you have a bad cough?',
+              emoji: '🤧',
+              weight: 3,
+              description: '(not just clearing your throat)'
+            },
+            {
+              id: 'headache',
+              question: 'Do you have a pounding headache?',
+              emoji: '🤕',
+              weight: 3,
+              description: '(worse than normal "meh" feeling)'
+            },
+            {
+              id: 'rash',
+              question: 'Do you have a rash or unexplained spots?',
+              emoji: '🔴',
+              weight: 4,
+              description: '(not just a random pimple)'
+            },
+            {
+              id: 'unicorn',
+              question: 'Did you see a unicorn this morning?',
+              emoji: '🦄',
+              weight: 0,
+              description: '(just checking if you\'re paying attention)'
+            },
+            {
+              id: 'stomach',
+              question: 'Does your stomach hurt really bad?',
+              emoji: '🤢',
+              weight: 3,
+              description: '(like, doubled over bad)'
             }
           ];
 
