@@ -71,14 +71,34 @@
           const [currentQuestion, setCurrentQuestion] = useState(null);
           const [answers, setAnswers] = useState({});
           const [showResult, setShowResult] = useState(false);
-          const [totalChecks] = useState(() => Math.floor(Math.random() * 1700 + 800));
+          const [totalChecks, setTotalChecks] = useState(null);
           const gradient = `linear-gradient(135deg, ${accentFrom} 0%, ${accentTo} 100%)`;
+
+          // Fetch real counter on component mount
+          React.useEffect(() => {
+            fetch('https://api.countapi.xyz/get/canistayhome/quiz-completions')
+              .then(res => res.json())
+              .then(data => setTotalChecks(data.value || 847))
+              .catch(() => setTotalChecks(847)); // Fallback if API fails
+          }, []);
+
+          // Increment counter when quiz completes
+          const incrementCounter = () => {
+            fetch('https://api.countapi.xyz/hit/canistayhome/quiz-completions')
+              .then(res => res.json())
+              .then(data => setTotalChecks(data.value))
+              .catch(() => {}); // Silent fail
+          };
 
           const handleAnswer = (answer) => {
             const newAnswers = { ...answers, [questions[currentQuestion].id]: answer === 'yes' };
             setAnswers(newAnswers);
-            if (currentQuestion === questions.length - 1) setShowResult(true);
-            else setCurrentQuestion(currentQuestion + 1);
+            if (currentQuestion === questions.length - 1) {
+              setShowResult(true);
+              incrementCounter(); // Increment the real counter
+            } else {
+              setCurrentQuestion(currentQuestion + 1);
+            }
           };
 
           const reset = () => { setCurrentQuestion(null); setAnswers({}); setShowResult(false); };
@@ -162,7 +182,7 @@
                   <h1 style={{ fontSize: '56px', fontFamily: '"Fredoka", sans-serif', color: '#1f2937', marginBottom: '20px', fontWeight: '700', lineHeight: '1.2' }}>Can I Stay Home?</h1>
                   <p style={{ fontSize: '20px', color: '#6b7280', marginBottom: '30px', lineHeight: '1.6' }}>The honest reality check.<br />Answer a few quick questions to find out.</p>
                   <div style={{ background: '#ede9fe', borderRadius: '12px', padding: '20px', marginBottom: '40px' }}>
-                    <p style={{ fontSize: '18px', color: '#5b21b6', margin: 0, fontWeight: '700' }}>📊 {totalChecks.toLocaleString()} checks completed today</p>
+                    <p style={{ fontSize: '18px', color: '#5b21b6', margin: 0, fontWeight: '700' }}>📊 {totalChecks !== null ? totalChecks.toLocaleString() : '...'} checks completed</p>
                   </div>
                   <button onClick={() => setCurrentQuestion(0)} style={{ background: gradient, color: 'white', border: 'none', borderRadius: '12px', padding: '20px 50px', fontSize: '22px', fontFamily: '"Fredoka", sans-serif', fontWeight: '600', cursor: 'pointer', transition: 'transform 0.2s', boxShadow: `0 4px 12px ${accentFrom}66` }}
                     onMouseEnter={(e) => e.target.style.transform = 'scale(1.05)'}
