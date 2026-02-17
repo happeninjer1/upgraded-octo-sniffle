@@ -3,11 +3,17 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Can I Stay Home? The honest reality check for kids and adults.">
+    <meta name="description" content="Can I Stay Home? The honest reality check for kids and adults. Should you stay home from school, work, or skip that social event?">
+    <meta name="keywords" content="can I stay home, sick day, stay home from school, call in sick, skip work, social event">
+    <meta property="og:title" content="Can I Stay Home? - The Reality Check">
+    <meta property="og:description" content="The honest reality check for kids and adults. Should you stay home today?">
+    <meta property="og:url" content="https://www.canistayhome.com">
     <title>Can I Stay Home? - The Reality Check</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Fredoka:wght@600;700&display=swap" rel="stylesheet">
+    <!-- Google AdSense -->
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5002895754546578" crossorigin="anonymous"></script>
     <style>
         * { box-sizing: border-box; }
         body { margin: 0; padding: 0; font-family: 'Space Mono', monospace; }
@@ -42,7 +48,7 @@
               🏠 Can I Stay Home?
             </div>
             <div className="nav-links" style={{ display: 'flex', gap: '30px' }}>
-              {['Home', 'About', 'FAQ'].map(page => (
+              {['Home', 'About', 'FAQ', 'Privacy'].map(page => (
                 <button key={page} onClick={() => setCurrentPage(page.toLowerCase())} style={{
                   background: currentPage === page.toLowerCase()
                     ? 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)' : 'transparent',
@@ -100,6 +106,48 @@
                       ← Switch Mode
                     </button>
                   </div>
+
+                  {/* Affiliate links — shown on "stay home" verdicts */}
+                  {(result.verdict === 'STAY HOME' || result.verdict === 'CONSIDER STAYING HOME' || result.verdict === 'MAYBE STAY HOME' || result.verdict === 'SKIP IT') && (
+                    <div style={{ marginTop: '40px', paddingTop: '30px', borderTop: '2px solid #e5e7eb' }}>
+                      <p style={{ fontSize: '14px', color: '#9ca3af', marginBottom: '16px', fontWeight: '700', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+                        🛒 You might need these
+                      </p>
+                      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
+                        {[
+                          { label: '🌡️ Digital Thermometer', url: 'https://www.amazon.com/s?k=digital+thermometer&tag=YOURTAG-20' },
+                          { label: '🤒 Fever Reducer', url: 'https://www.amazon.com/s?k=fever+reducer+adults&tag=YOURTAG-20' },
+                          { label: '🍵 Throat Soother Tea', url: 'https://www.amazon.com/s?k=throat+soother+tea&tag=YOURTAG-20' },
+                          { label: '😷 Forehead Thermometer', url: 'https://www.amazon.com/s?k=forehead+thermometer&tag=YOURTAG-20' },
+                        ].map(item => (
+                          <a key={item.label} href={item.url} target="_blank" rel="noopener noreferrer" style={{
+                            display: 'block', background: '#f9fafb', border: '2px solid #e5e7eb',
+                            borderRadius: '10px', padding: '12px 16px', fontSize: '14px',
+                            color: '#374151', textDecoration: 'none', fontWeight: '600',
+                            transition: 'all 0.2s', textAlign: 'center'
+                          }}
+                            onMouseEnter={(e) => { e.currentTarget.style.borderColor = '#667eea'; e.currentTarget.style.background = '#ede9fe'; }}
+                            onMouseLeave={(e) => { e.currentTarget.style.borderColor = '#e5e7eb'; e.currentTarget.style.background = '#f9fafb'; }}>
+                            {item.label}
+                          </a>
+                        ))}
+                      </div>
+                      <p style={{ fontSize: '11px', color: '#d1d5db', marginTop: '10px', marginBottom: 0 }}>
+                        As an Amazon Associate we earn from qualifying purchases.
+                      </p>
+                    </div>
+                  )}
+
+                  {/* AdSense Ad Slot */}
+                  <div style={{ marginTop: '30px' }}>
+                    <ins className="adsbygoogle"
+                      style={{ display: 'block' }}
+                      data-ad-client="ca-pub-5002895754546578"
+                      data-ad-slot="auto"
+                      data-ad-format="auto"
+                      data-full-width-responsive="true" />
+                  </div>
+
                   <p style={{ marginTop: '30px', fontSize: '14px', color: '#9ca3af' }}>{disclaimer}</p>
                 </div>
               </div>
@@ -360,6 +408,69 @@
           );
         };
 
+        // ─── PRIVACY POLICY PAGE ──────────────────────────────────────────────────
+        const PrivacyPage = () => (
+          <div style={{ minHeight: 'calc(100vh - 80px)', background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)', padding: '60px 20px' }}>
+            <div style={{ maxWidth: '800px', margin: '0 auto', background: 'white', borderRadius: '24px', padding: '60px 50px', boxShadow: '0 20px 60px rgba(0,0,0,0.3)' }}>
+              <h1 style={{ fontFamily: '"Fredoka", sans-serif', fontSize: '48px', color: '#1f2937', marginBottom: '10px', textAlign: 'center' }}>Privacy Policy</h1>
+              <p style={{ fontSize: '14px', color: '#9ca3af', textAlign: 'center', marginBottom: '40px' }}>Last updated: February 2026</p>
+
+              <div style={{ fontSize: '16px', lineHeight: '1.8', color: '#374151' }}>
+                <h2 style={{ fontFamily: '"Fredoka", sans-serif', fontSize: '26px', color: '#1f2937', marginBottom: '12px' }}>Overview</h2>
+                <p style={{ marginBottom: '24px' }}>This Privacy Policy describes how <strong>Can I Stay Home?</strong> ("we", "us", or "our") at <strong>www.canistayhome.com</strong> collects, uses, and shares information when you use our website. We take your privacy seriously and keep things simple.</p>
+
+                <h2 style={{ fontFamily: '"Fredoka", sans-serif', fontSize: '26px', color: '#1f2937', marginBottom: '12px' }}>Information We Collect</h2>
+                <p style={{ marginBottom: '12px' }}>We do <strong>not</strong> collect any personally identifiable information. Specifically:</p>
+                <ul style={{ marginBottom: '24px', paddingLeft: '24px' }}>
+                  <li style={{ marginBottom: '8px' }}>We do not require you to create an account or log in.</li>
+                  <li style={{ marginBottom: '8px' }}>We do not store your quiz answers or results.</li>
+                  <li style={{ marginBottom: '8px' }}>All quiz interactions happen entirely in your browser and are never sent to any server.</li>
+                </ul>
+                <p style={{ marginBottom: '24px' }}>We may collect anonymous, aggregated usage data (such as page views and general traffic patterns) through third-party analytics tools to help us improve the site.</p>
+
+                <h2 style={{ fontFamily: '"Fredoka", sans-serif', fontSize: '26px', color: '#1f2937', marginBottom: '12px' }}>Google AdSense & Cookies</h2>
+                <p style={{ marginBottom: '24px' }}>We use <strong>Google AdSense</strong> to display advertisements on this site. Google AdSense may use cookies and web beacons to serve ads based on your prior visits to this and other websites. You can opt out of personalised advertising by visiting <a href="https://www.google.com/settings/ads" target="_blank" rel="noopener noreferrer" style={{ color: '#667eea' }}>Google's Ads Settings</a>. For more information, see <a href="https://policies.google.com/privacy" target="_blank" rel="noopener noreferrer" style={{ color: '#667eea' }}>Google's Privacy Policy</a>.</p>
+
+                <h2 style={{ fontFamily: '"Fredoka", sans-serif', fontSize: '26px', color: '#1f2937', marginBottom: '12px' }}>Amazon Affiliate Links</h2>
+                <p style={{ marginBottom: '24px' }}>Can I Stay Home? is a participant in the <strong>Amazon Services LLC Associates Program</strong>, an affiliate advertising program designed to provide a means for sites to earn advertising fees by advertising and linking to Amazon.com. When you click an affiliate link and make a purchase, we may earn a small commission at no extra cost to you.</p>
+
+                <h2 style={{ fontFamily: '"Fredoka", sans-serif', fontSize: '26px', color: '#1f2937', marginBottom: '12px' }}>Third-Party Links</h2>
+                <p style={{ marginBottom: '24px' }}>Our site may contain links to third-party websites (such as Amazon). We are not responsible for the privacy practices or content of those sites. We encourage you to review their privacy policies.</p>
+
+                <h2 style={{ fontFamily: '"Fredoka", sans-serif', fontSize: '26px', color: '#1f2937', marginBottom: '12px' }}>Children's Privacy</h2>
+                <p style={{ marginBottom: '24px' }}>While our tool is designed to be used by or on behalf of children, we do not knowingly collect any personal information from children under 13. Since we collect no personal data at all, the site is safe to use for all ages.</p>
+
+                <h2 style={{ fontFamily: '"Fredoka", sans-serif', fontSize: '26px', color: '#1f2937', marginBottom: '12px' }}>Changes to This Policy</h2>
+                <p style={{ marginBottom: '24px' }}>We may update this Privacy Policy from time to time. Changes will be posted on this page with an updated date. Continued use of the site after changes constitutes acceptance of the new policy.</p>
+
+                <h2 style={{ fontFamily: '"Fredoka", sans-serif', fontSize: '26px', color: '#1f2937', marginBottom: '12px' }}>Contact</h2>
+                <p style={{ marginBottom: 0 }}>If you have any questions about this Privacy Policy, you can reach us via the contact information on our site.</p>
+              </div>
+            </div>
+          </div>
+        );
+
+        // ─── FOOTER ────────────────────────────────────────────────────────────────
+        const Footer = ({ setCurrentPage }) => (
+          <footer style={{ background: '#0f172a', padding: '30px 40px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '16px' }}>
+            <div style={{ fontFamily: '"Fredoka", sans-serif', fontSize: '18px', color: '#94a3b8' }}>
+              🏠 Can I Stay Home? · <span style={{ fontSize: '14px' }}>www.canistayhome.com</span>
+            </div>
+            <div style={{ display: 'flex', gap: '24px', flexWrap: 'wrap' }}>
+              {[['About', 'about'], ['FAQ', 'faq'], ['Privacy Policy', 'privacy']].map(([label, page]) => (
+                <button key={page} onClick={() => setCurrentPage(page)} style={{ background: 'transparent', border: 'none', color: '#64748b', fontSize: '14px', cursor: 'pointer', fontFamily: '"Space Mono", monospace', transition: 'color 0.2s' }}
+                  onMouseEnter={(e) => e.target.style.color = '#94a3b8'}
+                  onMouseLeave={(e) => e.target.style.color = '#64748b'}>
+                  {label}
+                </button>
+              ))}
+            </div>
+            <p style={{ margin: 0, fontSize: '12px', color: '#334155', width: '100%', textAlign: 'center' }}>
+              Not medical advice. Not HR policy. Just an honest quiz. · As an Amazon Associate we earn from qualifying purchases.
+            </p>
+          </footer>
+        );
+
         // ─── APP ROOT ──────────────────────────────────────────────────────────────
         const App = () => {
           const [currentPage, setCurrentPage] = useState('home');
@@ -371,6 +482,7 @@
           const renderContent = () => {
             if (currentPage === 'about') return <AboutPage />;
             if (currentPage === 'faq') return <FAQPage />;
+            if (currentPage === 'privacy') return <PrivacyPage />;
             if (!mode) return <HomePage onSelect={setMode} />;
             if (mode === 'kids') return (
               <QuizShell questions={kidsQuestions} getVerdict={getKidsVerdict} onReset={() => setMode(null)}
@@ -390,9 +502,12 @@
           };
 
           return (
-            <div>
+            <div style={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
               <Navigation currentPage={currentPage} setCurrentPage={(p) => { setCurrentPage(p); if (p === 'home') { setMode(null); setAdultMode(null); } }} onLogoClick={resetAll} />
-              {renderContent()}
+              <div style={{ flex: 1 }}>
+                {renderContent()}
+              </div>
+              <Footer setCurrentPage={setCurrentPage} />
             </div>
           );
         };
