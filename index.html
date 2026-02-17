@@ -67,7 +67,7 @@
         );
 
         // ─── SHARED QUIZ SHELL ─────────────────────────────────────────────────────
-        const QuizShell = ({ questions, getVerdict, onReset, accentFrom, accentTo, disclaimer }) => {
+        const QuizShell = ({ questions, getVerdict, onReset, accentFrom, accentTo, disclaimer, showAffiliateLinks = false }) => {
           const [currentQuestion, setCurrentQuestion] = useState(null);
           const [answers, setAnswers] = useState({});
           const [showResult, setShowResult] = useState(false);
@@ -107,8 +107,8 @@
                     </button>
                   </div>
 
-                  {/* Affiliate links — shown on "stay home" verdicts */}
-                  {(result.verdict === 'STAY HOME' || result.verdict === 'CONSIDER STAYING HOME' || result.verdict === 'MAYBE STAY HOME' || result.verdict === 'SKIP IT') && (
+                  {/* Affiliate links — adults only */}
+                  {showAffiliateLinks && (result.verdict === 'STAY HOME' || result.verdict === 'CONSIDER STAYING HOME' || result.verdict === 'SKIP IT') && (
                     <div style={{ marginTop: '40px', paddingTop: '30px', borderTop: '2px solid #e5e7eb' }}>
                       <p style={{ fontSize: '14px', color: '#9ca3af', marginBottom: '16px', fontWeight: '700', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
                         🛒 You might need these
@@ -492,11 +492,11 @@
               if (!adultMode) return <AdultModeSelector onSelect={setAdultMode} onBack={() => setMode(null)} />;
               if (adultMode === 'work') return (
                 <QuizShell questions={workQuestions} getVerdict={getWorkVerdict} onReset={() => setAdultMode(null)}
-                  accentFrom="#0ea5e9" accentTo="#6366f1" disclaimer="Not a doctor. Not your HR department. Just a vibe check." />
+                  accentFrom="#0ea5e9" accentTo="#6366f1" disclaimer="Not a doctor. Not your HR department. Just a vibe check." showAffiliateLinks={true} />
               );
               if (adultMode === 'social') return (
                 <QuizShell questions={socialQuestions} getVerdict={getSocialVerdict} onReset={() => setAdultMode(null)}
-                  accentFrom="#f97316" accentTo="#ec4899" disclaimer="Not a therapist. Just a mirror. Be honest with yourself. 🪞" />
+                  accentFrom="#f97316" accentTo="#ec4899" disclaimer="Not a therapist. Just a mirror. Be honest with yourself. 🪞" showAffiliateLinks={true} />
               );
             }
           };
