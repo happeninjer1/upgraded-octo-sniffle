@@ -3,575 +3,104 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Can I Stay Home? The honest reality check for kids and parents.">
+    <meta name="description" content="Can I Stay Home? The honest reality check for kids and adults.">
     <title>Can I Stay Home? - The Reality Check</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Fredoka:wght@600;700&display=swap" rel="stylesheet">
     <style>
         * { box-sizing: border-box; }
-        body {
-            margin: 0;
-            padding: 0;
-            font-family: 'Space Mono', monospace;
-        }
-        #root {
-            min-height: 100vh;
-        }
-        @media (max-width: 768px) {
-            .nav-links { display: none; }
-            .mobile-menu { display: block; }
-        }
+        body { margin: 0; padding: 0; font-family: 'Space Mono', monospace; }
+        #root { min-height: 100vh; }
+        @media (max-width: 768px) { .nav-links { display: none; } }
+        @keyframes slideUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        @keyframes bounce { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
     </style>
 </head>
 <body>
     <div id="root"></div>
-    
     <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
     <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
     <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
-    
     <script type="text/babel">
-        const { useState, useEffect, useRef } = React;
+        const { useState } = React;
 
-        // Navigation Component
-        const Navigation = ({ currentPage, setCurrentPage }) => {
-          return (
-            <nav style={{
-              background: 'rgba(255, 255, 255, 0.95)',
-              backdropFilter: 'blur(10px)',
-              padding: '20px 40px',
-              display: 'flex',
-              justifyContent: 'space-between',
-              alignItems: 'center',
-              boxShadow: '0 2px 20px rgba(0,0,0,0.1)',
-              position: 'sticky',
-              top: 0,
-              zIndex: 1000
-            }}>
-              <div style={{
-                fontFamily: '"Fredoka", sans-serif',
-                fontSize: '24px',
-                fontWeight: '700',
-                background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-                WebkitBackgroundClip: 'text',
-                WebkitTextFillColor: 'transparent',
-                cursor: 'pointer'
-              }} onClick={() => setCurrentPage('home')}>
-                🏠 Can I Stay Home?
-              </div>
-              <div className="nav-links" style={{
-                display: 'flex',
-                gap: '30px'
-              }}>
-                {['Home', 'About', 'FAQ'].map(page => (
-                  <button
-                    key={page}
-                    onClick={() => setCurrentPage(page.toLowerCase())}
-                    style={{
-                      background: currentPage === page.toLowerCase() 
-                        ? 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)'
-                        : 'transparent',
-                      color: currentPage === page.toLowerCase() ? 'white' : '#6b7280',
-                      border: 'none',
-                      padding: '10px 20px',
-                      borderRadius: '8px',
-                      fontFamily: '"Fredoka", sans-serif',
-                      fontSize: '16px',
-                      fontWeight: '600',
-                      cursor: 'pointer',
-                      transition: 'all 0.2s'
-                    }}
-                    onMouseEnter={(e) => {
-                      if (currentPage !== page.toLowerCase()) {
-                        e.target.style.background = '#f3f4f6';
-                      }
-                    }}
-                    onMouseLeave={(e) => {
-                      if (currentPage !== page.toLowerCase()) {
-                        e.target.style.background = 'transparent';
-                      }
-                    }}
-                  >
-                    {page}
-                  </button>
-                ))}
-              </div>
-            </nav>
-          );
-        };
-
-        // About Page
-        const AboutPage = () => {
-          return (
+        // ─── NAVIGATION ────────────────────────────────────────────────────────────
+        const Navigation = ({ currentPage, setCurrentPage, onLogoClick }) => (
+          <nav style={{
+            background: 'rgba(255,255,255,0.95)', backdropFilter: 'blur(10px)',
+            padding: '20px 40px', display: 'flex', justifyContent: 'space-between',
+            alignItems: 'center', boxShadow: '0 2px 20px rgba(0,0,0,0.1)',
+            position: 'sticky', top: 0, zIndex: 1000
+          }}>
             <div style={{
-              minHeight: 'calc(100vh - 80px)',
+              fontFamily: '"Fredoka", sans-serif', fontSize: '24px', fontWeight: '700',
               background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-              padding: '60px 20px'
-            }}>
-              <div style={{
-                maxWidth: '800px',
-                margin: '0 auto',
-                background: 'white',
-                borderRadius: '24px',
-                padding: '60px 50px',
-                boxShadow: '0 20px 60px rgba(0,0,0,0.3)'
-              }}>
-                <h1 style={{
-                  fontFamily: '"Fredoka", sans-serif',
-                  fontSize: '48px',
-                  color: '#1f2937',
-                  marginBottom: '30px',
-                  textAlign: 'center'
-                }}>
-                  About This Tool
-                </h1>
-
-                <div style={{
-                  fontSize: '18px',
-                  lineHeight: '1.8',
-                  color: '#374151',
-                  marginBottom: '40px'
-                }}>
-                  <p style={{ marginBottom: '20px' }}>
-                    <strong>Can I Stay Home?</strong> was created to help families navigate those tricky morning moments when kids don't want to go to school. It's not about being harsh or dismissive—it's about providing an honest, objective reality check that both kids and parents can trust.
-                  </p>
-
-                  <p style={{ marginBottom: '20px' }}>
-                    We know mornings are hard. Kids get tired. Parents get frustrated. This tool acts as a neutral third party that asks the important questions and helps everyone make the right call.
-                  </p>
-                </div>
-
-                <div style={{
-                  background: '#fef3c7',
-                  border: '3px solid #f59e0b',
-                  borderRadius: '12px',
-                  padding: '30px',
-                  marginBottom: '40px'
-                }}>
-                  <h3 style={{
-                    fontFamily: '"Fredoka", sans-serif',
-                    fontSize: '24px',
-                    color: '#92400e',
-                    marginBottom: '15px',
-                    marginTop: 0
-                  }}>
-                    ⚠️ Important Note
-                  </h3>
-                  <p style={{
-                    margin: 0,
-                    fontSize: '16px',
-                    color: '#78350f',
-                    lineHeight: '1.6'
-                  }}>
-                    This tool is <strong>not medical advice</strong>. It's a fun, educational resource to help with decision-making. Parents should always trust their instincts and consult healthcare professionals when needed.
-                  </p>
-                </div>
-
-                <h2 style={{
-                  fontFamily: '"Fredoka", sans-serif',
-                  fontSize: '32px',
-                  color: '#1f2937',
-                  marginBottom: '20px'
-                }}>
-                  For Parents & Teachers
-                </h2>
-
-                <div style={{
-                  fontSize: '18px',
-                  lineHeight: '1.8',
-                  color: '#374151'
-                }}>
-                  <p style={{ marginBottom: '20px' }}>
-                    <strong>Why this works:</strong> Kids respond better to "the computer says" than "mom says." Having an objective tool removes the emotional battle and creates a shared reference point.
-                  </p>
-
-                  <p style={{ marginBottom: '20px' }}>
-                    <strong>How to use it:</strong> Make it a morning routine. When resistance happens, pull out the phone/tablet and run through the check together. The verdict becomes something you're both discovering, not something you're imposing.
-                  </p>
-
-                  <p style={{ marginBottom: '20px' }}>
-                    <strong>Teaching moments:</strong> This tool helps kids learn to differentiate between "I don't feel like it" and "I actually don't feel well." That's a crucial life skill.
-                  </p>
-
-                  <p style={{ margin: 0 }}>
-                    <strong>Flexibility matters:</strong> If your gut says something's off even when the quiz says "go," trust yourself. You know your kid best. This is a tool, not a rule.
-                  </p>
-                </div>
-              </div>
+              WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', cursor: 'pointer'
+            }} onClick={onLogoClick}>
+              🏠 Can I Stay Home?
             </div>
-          );
-        };
-
-        // FAQ Page
-        const FAQPage = () => {
-          const [openIndex, setOpenIndex] = useState(null);
-
-          const faqs = [
-            {
-              question: "Is this actually accurate?",
-              answer: "It's based on common medical guidelines for when kids should stay home from school. However, it's not a substitute for medical advice. When in doubt, trust your parental instincts or call your pediatrician."
-            },
-            {
-              question: "My kid failed the check but seems fine. Should they still go?",
-              answer: "The tool is conservative by design. If your parental gut says they're fine and just being dramatic, you can override it. But sometimes kids ARE sick and trying to push through—this helps catch those cases."
-            },
-            {
-              question: "What if they pass but I still think they should stay home?",
-              answer: "Then they stay home! This is a decision support tool, not a rule book. You always have the final say. Trust yourself."
-            },
-            {
-              question: "Can my kid game the system?",
-              answer: "Kids are smart! Some might try to exaggerate symptoms. The tool asks objective questions (fever, vomiting, etc.) that are harder to fake. But you'll need to verify the answers are honest."
-            },
-            {
-              question: "What about mental health days?",
-              answer: "Mental health is real health. If your child is genuinely struggling emotionally, that's legitimate. This tool focuses on physical illness, but don't ignore emotional wellbeing."
-            },
-            {
-              question: "My school has different rules. Should I follow them instead?",
-              answer: "Always follow your school's specific attendance and health policies. This tool is a general guide, but your school's rules take precedence."
-            }
-          ];
-
-          return (
-            <div style={{
-              minHeight: 'calc(100vh - 80px)',
-              background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-              padding: '60px 20px'
-            }}>
-              <div style={{
-                maxWidth: '800px',
-                margin: '0 auto',
-                background: 'white',
-                borderRadius: '24px',
-                padding: '60px 50px',
-                boxShadow: '0 20px 60px rgba(0,0,0,0.3)'
-              }}>
-                <h1 style={{
-                  fontFamily: '"Fredoka", sans-serif',
-                  fontSize: '48px',
-                  color: '#1f2937',
-                  marginBottom: '20px',
-                  textAlign: 'center'
-                }}>
-                  Frequently Asked Questions
-                </h1>
-
-                <p style={{
-                  fontSize: '18px',
-                  color: '#6b7280',
-                  textAlign: 'center',
-                  marginBottom: '50px'
-                }}>
-                  Got questions? We've got answers.
-                </p>
-
-                <div style={{ display: 'grid', gap: '16px' }}>
-                  {faqs.map((faq, index) => (
-                    <div key={index} style={{
-                      border: '2px solid #e5e7eb',
-                      borderRadius: '12px',
-                      overflow: 'hidden',
-                      transition: 'all 0.2s'
-                    }}>
-                      <button
-                        onClick={() => setOpenIndex(openIndex === index ? null : index)}
-                        style={{
-                          width: '100%',
-                          padding: '24px',
-                          background: openIndex === index ? '#f9fafb' : 'white',
-                          border: 'none',
-                          textAlign: 'left',
-                          cursor: 'pointer',
-                          display: 'flex',
-                          justifyContent: 'space-between',
-                          alignItems: 'center',
-                          fontSize: '20px',
-                          fontFamily: '"Fredoka", sans-serif',
-                          fontWeight: '600',
-                          color: '#1f2937'
-                        }}
-                      >
-                        <span>{faq.question}</span>
-                        <span style={{
-                          fontSize: '24px',
-                          transition: 'transform 0.2s',
-                          transform: openIndex === index ? 'rotate(180deg)' : 'rotate(0deg)'
-                        }}>
-                          ▼
-                        </span>
-                      </button>
-                      {openIndex === index && (
-                        <div style={{
-                          padding: '0 24px 24px 24px',
-                          fontSize: '16px',
-                          lineHeight: '1.7',
-                          color: '#4b5563'
-                        }}>
-                          {faq.answer}
-                        </div>
-                      )}
-                    </div>
-                  ))}
-                </div>
-              </div>
+            <div className="nav-links" style={{ display: 'flex', gap: '30px' }}>
+              {['Home', 'About', 'FAQ'].map(page => (
+                <button key={page} onClick={() => setCurrentPage(page.toLowerCase())} style={{
+                  background: currentPage === page.toLowerCase()
+                    ? 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)' : 'transparent',
+                  color: currentPage === page.toLowerCase() ? 'white' : '#6b7280',
+                  border: 'none', padding: '10px 20px', borderRadius: '8px',
+                  fontFamily: '"Fredoka", sans-serif', fontSize: '16px', fontWeight: '600',
+                  cursor: 'pointer', transition: 'all 0.2s'
+                }}
+                  onMouseEnter={(e) => { if (currentPage !== page.toLowerCase()) e.target.style.background = '#f3f4f6'; }}
+                  onMouseLeave={(e) => { if (currentPage !== page.toLowerCase()) e.target.style.background = 'transparent'; }}>
+                  {page}
+                </button>
+              ))}
             </div>
-          );
-        };
+          </nav>
+        );
 
-        // Quiz/Home Page
-        const QuizPage = () => {
+        // ─── SHARED QUIZ SHELL ─────────────────────────────────────────────────────
+        const QuizShell = ({ questions, getVerdict, onReset, accentFrom, accentTo, disclaimer }) => {
           const [currentQuestion, setCurrentQuestion] = useState(null);
           const [answers, setAnswers] = useState({});
           const [showResult, setShowResult] = useState(false);
-          // Generate random check count between 800-2500 on each page load
-          const [totalChecks, setTotalChecks] = useState(() => Math.floor(Math.random() * (2500 - 800 + 1)) + 800);
-
-          const questions = [
-            {
-              id: 'fever',
-              question: 'Do you have a fever?',
-              emoji: '🌡️',
-              weight: 5,
-              description: '(100.4°F / 38°C or higher)'
-            },
-            {
-              id: 'vomit',
-              question: 'Have you thrown up in the last 24 hours?',
-              emoji: '🤢',
-              weight: 5
-            },
-            {
-              id: 'diarrhea',
-              question: 'Do you have diarrhea?',
-              emoji: '💩',
-              weight: 4
-            },
-            {
-              id: 'contagious',
-              question: 'Does the doctor think you have something contagious?',
-              emoji: '🦠',
-              weight: 5,
-              description: '(like strep, flu, pink eye, etc.)'
-            },
-            {
-              id: 'pain',
-              question: 'Are you in serious pain?',
-              emoji: '😫',
-              weight: 4,
-              description: "(not just 'my tummy feels weird')"
-            },
-            {
-              id: 'sleep',
-              question: 'Did you sleep terribly last night?',
-              emoji: '😴',
-              weight: 2,
-              description: '(like, genuinely almost no sleep)'
-            },
-            {
-              id: 'energy',
-              question: 'Do you feel extremely tired or weak?',
-              emoji: '🥱',
-              weight: 3,
-              description: '(not normal "I don\'t wanna" tired)'
-            },
-            {
-              id: 'test',
-              question: 'Is there a big test or presentation today?',
-              emoji: '📝',
-              weight: -2,
-              description: '(being honest...)'
-            },
-            {
-              id: 'cough',
-              question: 'Do you have a bad cough?',
-              emoji: '🤧',
-              weight: 3,
-              description: '(not just clearing your throat)'
-            },
-            {
-              id: 'headache',
-              question: 'Do you have a pounding headache?',
-              emoji: '🤕',
-              weight: 3,
-              description: '(worse than normal "meh" feeling)'
-            },
-            {
-              id: 'rash',
-              question: 'Do you have a rash or unexplained spots?',
-              emoji: '🔴',
-              weight: 4,
-              description: '(not just a random pimple)'
-            },
-            {
-              id: 'unicorn',
-              question: 'Did you see a unicorn this morning?',
-              emoji: '🦄',
-              weight: 0,
-              description: '(just checking if you\'re paying attention)'
-            },
-            {
-              id: 'stomach',
-              question: 'Does your stomach hurt really bad?',
-              emoji: '🤢',
-              weight: 3,
-              description: '(like, doubled over bad)'
-            }
-          ];
+          const [totalChecks] = useState(() => Math.floor(Math.random() * 1700 + 800));
+          const gradient = `linear-gradient(135deg, ${accentFrom} 0%, ${accentTo} 100%)`;
 
           const handleAnswer = (answer) => {
-            const newAnswers = {
-              ...answers,
-              [questions[currentQuestion].id]: answer === 'yes'
-            };
+            const newAnswers = { ...answers, [questions[currentQuestion].id]: answer === 'yes' };
             setAnswers(newAnswers);
-
-            if (currentQuestion === questions.length - 1) {
-              setShowResult(true);
-              setTotalChecks(prev => prev + 1);
-            } else {
-              setCurrentQuestion(currentQuestion + 1);
-            }
+            if (currentQuestion === questions.length - 1) setShowResult(true);
+            else setCurrentQuestion(currentQuestion + 1);
           };
 
-          const calculateScore = () => {
-            let score = 0;
-            questions.forEach(q => {
-              if (answers[q.id]) {
-                score += q.weight;
-              }
-            });
-            return score;
-          };
-
-          const getVerdict = () => {
-            const score = calculateScore();
-            
-            if (score >= 10) {
-              return {
-                verdict: 'STAY HOME',
-                color: '#dc2626',
-                emoji: '🏠',
-                message: 'Yeah, you should probably stay home. You\'re dealing with some legit symptoms that either mean you\'re contagious or you genuinely need rest.',
-                advice: 'Rest up, drink fluids, and get better. If symptoms get worse, tell a parent to call the doctor.'
-              };
-            } else if (score >= 5) {
-              return {
-                verdict: 'MAYBE STAY HOME',
-                color: '#f59e0b',
-                emoji: '🤔',
-                message: 'This one\'s borderline. You have some symptoms, but not the really serious ones. Might be worth staying home, might not.',
-                advice: 'Talk it over with your parents. If you feel worse as the morning goes on, definitely stay home. If you start feeling better, maybe tough it out.'
-              };
-            } else if (score >= 1) {
-              return {
-                verdict: 'PROBABLY GO TO SCHOOL',
-                color: '#2563eb',
-                emoji: '🎒',
-                message: 'You\'re not feeling 100%, but it\'s not bad enough to skip. You can probably make it through the day.',
-                advice: 'Take it easy today. Let your teacher know if you start feeling worse. And be honest with yourself—are you really sick or just not feeling it?'
-              };
-            } else {
-              return {
-                verdict: 'GO TO SCHOOL',
-                color: '#059669',
-                emoji: '✅',
-                message: 'Nice try, but you\'re fine. This is classic "I don\'t wanna" territory, not "I\'m actually sick."',
-                advice: 'Time to face the music. You\'ll survive. We believe in you.'
-              };
-            }
-          };
-
-          const resetQuiz = () => {
-            setCurrentQuestion(null);
-            setAnswers({});
-            setShowResult(false);
-          };
+          const reset = () => { setCurrentQuestion(null); setAnswers({}); setShowResult(false); };
 
           if (showResult) {
-            const result = getVerdict();
+            const result = getVerdict(answers);
             return (
-              <div style={{
-                minHeight: 'calc(100vh - 80px)',
-                background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                padding: '40px 20px'
-              }}>
-                <div style={{
-                  background: 'white',
-                  borderRadius: '24px',
-                  maxWidth: '600px',
-                  width: '100%',
-                  padding: '60px 40px',
-                  boxShadow: '0 20px 60px rgba(0,0,0,0.3)',
-                  textAlign: 'center'
-                }}>
-                  <div style={{ fontSize: '100px', marginBottom: '20px' }}>
-                    {result.emoji}
+              <div style={{ minHeight: 'calc(100vh - 80px)', background: gradient, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '40px 20px' }}>
+                <div style={{ background: 'white', borderRadius: '24px', maxWidth: '600px', width: '100%', padding: '60px 40px', boxShadow: '0 20px 60px rgba(0,0,0,0.3)', textAlign: 'center', animation: 'slideUp 0.5s ease-out' }}>
+                  <div style={{ fontSize: '100px', marginBottom: '20px', animation: 'bounce 2s infinite' }}>{result.emoji}</div>
+                  <h1 style={{ fontSize: '48px', fontFamily: '"Fredoka", sans-serif', color: result.color, marginBottom: '20px', fontWeight: '700' }}>{result.verdict}</h1>
+                  <p style={{ fontSize: '20px', color: '#374151', marginBottom: '30px', lineHeight: '1.6' }}>{result.message}</p>
+                  <div style={{ background: '#f3f4f6', borderRadius: '12px', padding: '24px', marginBottom: '40px' }}>
+                    <p style={{ fontSize: '16px', color: '#4b5563', margin: 0, lineHeight: '1.6' }}><strong>💡 Tip:</strong> {result.advice}</p>
                   </div>
-
-                  <h1 style={{
-                    fontSize: '48px',
-                    fontFamily: '"Fredoka", sans-serif',
-                    color: result.color,
-                    marginBottom: '20px',
-                    fontWeight: '700'
-                  }}>
-                    {result.verdict}
-                  </h1>
-
-                  <p style={{
-                    fontSize: '20px',
-                    color: '#374151',
-                    marginBottom: '30px',
-                    lineHeight: '1.6'
-                  }}>
-                    {result.message}
-                  </p>
-
-                  <div style={{
-                    background: '#f3f4f6',
-                    borderRadius: '12px',
-                    padding: '24px',
-                    marginBottom: '40px'
-                  }}>
-                    <p style={{
-                      fontSize: '16px',
-                      color: '#4b5563',
-                      margin: 0,
-                      lineHeight: '1.6'
-                    }}>
-                      <strong>💡 Tip:</strong> {result.advice}
-                    </p>
+                  <div style={{ display: 'flex', gap: '16px', justifyContent: 'center', flexWrap: 'wrap' }}>
+                    <button onClick={reset} style={{ background: gradient, color: 'white', border: 'none', borderRadius: '12px', padding: '16px 36px', fontSize: '18px', fontFamily: '"Fredoka", sans-serif', fontWeight: '600', cursor: 'pointer', transition: 'transform 0.2s' }}
+                      onMouseEnter={(e) => e.target.style.transform = 'scale(1.05)'}
+                      onMouseLeave={(e) => e.target.style.transform = 'scale(1)'}>
+                      Try Again
+                    </button>
+                    <button onClick={onReset} style={{ background: 'transparent', color: '#6b7280', border: '2px solid #e5e7eb', borderRadius: '12px', padding: '16px 36px', fontSize: '18px', fontFamily: '"Fredoka", sans-serif', fontWeight: '600', cursor: 'pointer', transition: 'all 0.2s' }}
+                      onMouseEnter={(e) => { e.target.style.background = '#f3f4f6'; }}
+                      onMouseLeave={(e) => { e.target.style.background = 'transparent'; }}>
+                      ← Switch Mode
+                    </button>
                   </div>
-
-                  <button onClick={resetQuiz} style={{
-                    background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-                    color: 'white',
-                    border: 'none',
-                    borderRadius: '12px',
-                    padding: '16px 40px',
-                    fontSize: '18px',
-                    fontFamily: '"Fredoka", sans-serif',
-                    fontWeight: '600',
-                    cursor: 'pointer',
-                    transition: 'transform 0.2s'
-                  }}
-                  onMouseEnter={(e) => e.target.style.transform = 'scale(1.05)'}
-                  onMouseLeave={(e) => e.target.style.transform = 'scale(1)'}>
-                    Take Check Again
-                  </button>
-
-                  <p style={{
-                    marginTop: '30px',
-                    fontSize: '14px',
-                    color: '#9ca3af'
-                  }}>
-                    Remember: This is just a guide. Parents have the final say! 👨‍👩‍👧‍👦
-                  </p>
+                  <p style={{ marginTop: '30px', fontSize: '14px', color: '#9ca3af' }}>{disclaimer}</p>
                 </div>
               </div>
             );
@@ -579,96 +108,23 @@
 
           if (currentQuestion === null) {
             return (
-              <div style={{
-                minHeight: 'calc(100vh - 80px)',
-                background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                padding: '40px 20px'
-              }}>
-                <div style={{
-                  background: 'white',
-                  borderRadius: '24px',
-                  maxWidth: '700px',
-                  width: '100%',
-                  padding: '60px 40px',
-                  boxShadow: '0 20px 60px rgba(0,0,0,0.3)',
-                  textAlign: 'center'
-                }}>
-                  <div style={{ fontSize: '100px', marginBottom: '30px' }}>
-                    🤒
+              <div style={{ minHeight: 'calc(100vh - 80px)', background: gradient, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '40px 20px' }}>
+                <div style={{ background: 'white', borderRadius: '24px', maxWidth: '700px', width: '100%', padding: '60px 40px', boxShadow: '0 20px 60px rgba(0,0,0,0.3)', textAlign: 'center', animation: 'slideUp 0.5s ease-out' }}>
+                  <div style={{ fontSize: '100px', marginBottom: '30px' }}>🤒</div>
+                  <h1 style={{ fontSize: '56px', fontFamily: '"Fredoka", sans-serif', color: '#1f2937', marginBottom: '20px', fontWeight: '700', lineHeight: '1.2' }}>Can I Stay Home?</h1>
+                  <p style={{ fontSize: '20px', color: '#6b7280', marginBottom: '30px', lineHeight: '1.6' }}>The honest reality check.<br />Answer a few quick questions to find out.</p>
+                  <div style={{ background: '#ede9fe', borderRadius: '12px', padding: '20px', marginBottom: '40px' }}>
+                    <p style={{ fontSize: '18px', color: '#5b21b6', margin: 0, fontWeight: '700' }}>📊 {totalChecks.toLocaleString()} checks completed today</p>
                   </div>
-
-                  <h1 style={{
-                    fontSize: '56px',
-                    fontFamily: '"Fredoka", sans-serif',
-                    color: '#1f2937',
-                    marginBottom: '20px',
-                    fontWeight: '700',
-                    lineHeight: '1.2'
-                  }}>
-                    Can I Stay Home?
-                  </h1>
-
-                  <p style={{
-                    fontSize: '20px',
-                    color: '#6b7280',
-                    marginBottom: '30px',
-                    lineHeight: '1.6'
-                  }}>
-                    The honest reality check for kids and parents.
-                    <br />
-                    Answer a few quick questions to find out.
-                  </p>
-
-                  <div style={{
-                    background: '#ede9fe',
-                    borderRadius: '12px',
-                    padding: '20px',
-                    marginBottom: '40px'
-                  }}>
-                    <p style={{
-                      fontSize: '18px',
-                      color: '#5b21b6',
-                      margin: 0,
-                      fontWeight: '700'
-                    }}>
-                      📊 {totalChecks.toLocaleString()} checks completed today
-                    </p>
-                  </div>
-
-                  <button onClick={() => setCurrentQuestion(0)} style={{
-                    background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-                    color: 'white',
-                    border: 'none',
-                    borderRadius: '12px',
-                    padding: '20px 50px',
-                    fontSize: '22px',
-                    fontFamily: '"Fredoka", sans-serif',
-                    fontWeight: '600',
-                    cursor: 'pointer',
-                    transition: 'transform 0.2s',
-                    boxShadow: '0 4px 12px rgba(102, 126, 234, 0.4)'
-                  }}
-                  onMouseEnter={(e) => e.target.style.transform = 'scale(1.05)'}
-                  onMouseLeave={(e) => e.target.style.transform = 'scale(1)'}>
-                    Start Check-Up
+                  <button onClick={() => setCurrentQuestion(0)} style={{ background: gradient, color: 'white', border: 'none', borderRadius: '12px', padding: '20px 50px', fontSize: '22px', fontFamily: '"Fredoka", sans-serif', fontWeight: '600', cursor: 'pointer', transition: 'transform 0.2s', boxShadow: `0 4px 12px ${accentFrom}66` }}
+                    onMouseEnter={(e) => e.target.style.transform = 'scale(1.05)'}
+                    onMouseLeave={(e) => e.target.style.transform = 'scale(1)'}>
+                    Start Check-Up ✓
                   </button>
-
-                  <div style={{
-                    marginTop: '50px',
-                    paddingTop: '30px',
-                    borderTop: '2px solid #e5e7eb'
-                  }}>
-                    <p style={{
-                      fontSize: '14px',
-                      color: '#9ca3af',
-                      margin: 0
-                    }}>
-                      💡 For parents: This is a fun tool, not medical advice. Trust your parental instincts!
-                    </p>
-                  </div>
+                  <button onClick={onReset} style={{ display: 'block', margin: '20px auto 0', background: 'transparent', color: '#9ca3af', border: 'none', fontSize: '15px', cursor: 'pointer', fontFamily: '"Space Mono", monospace' }}>
+                    ← Back to mode selection
+                  </button>
+                  <p style={{ marginTop: '30px', fontSize: '14px', color: '#9ca3af' }}>{disclaimer}</p>
                 </div>
               </div>
             );
@@ -676,120 +132,32 @@
 
           const q = questions[currentQuestion];
           const progress = ((currentQuestion + 1) / questions.length) * 100;
-
           return (
-            <div style={{
-              minHeight: 'calc(100vh - 80px)',
-              background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              padding: '40px 20px'
-            }}>
-              <div style={{
-                background: 'white',
-                borderRadius: '24px',
-                maxWidth: '600px',
-                width: '100%',
-                padding: '40px',
-                boxShadow: '0 20px 60px rgba(0,0,0,0.3)',
-                animation: 'slideUp 0.5s ease-out'
-              }}>
-                <style>{`
-                  @keyframes slideUp {
-                    from { opacity: 0; transform: translateY(30px); }
-                    to { opacity: 1; transform: translateY(0); }
-                  }
-                `}</style>
-
+            <div style={{ minHeight: 'calc(100vh - 80px)', background: gradient, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '40px 20px' }}>
+              <div style={{ background: 'white', borderRadius: '24px', maxWidth: '600px', width: '100%', padding: '40px', boxShadow: '0 20px 60px rgba(0,0,0,0.3)', animation: 'slideUp 0.3s ease-out' }}>
                 <div style={{ marginBottom: '30px' }}>
-                  <div style={{
-                    display: 'flex',
-                    justifyContent: 'space-between',
-                    marginBottom: '8px',
-                    fontSize: '14px',
-                    color: '#6b7280',
-                    fontWeight: '700'
-                  }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '8px', fontSize: '14px', color: '#6b7280', fontWeight: '700' }}>
                     <span>Question {currentQuestion + 1} of {questions.length}</span>
                     <span>{Math.round(progress)}%</span>
                   </div>
-                  <div style={{
-                    height: '8px',
-                    background: '#e5e7eb',
-                    borderRadius: '999px',
-                    overflow: 'hidden'
-                  }}>
-                    <div style={{
-                      height: '100%',
-                      background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-                      width: `${progress}%`,
-                      transition: 'width 0.3s ease'
-                    }} />
+                  <div style={{ height: '8px', background: '#e5e7eb', borderRadius: '999px', overflow: 'hidden' }}>
+                    <div style={{ height: '100%', background: gradient, width: `${progress}%`, transition: 'width 0.3s ease' }} />
                   </div>
                 </div>
-
                 <div style={{ textAlign: 'center', marginBottom: '40px' }}>
-                  <div style={{ fontSize: '80px', marginBottom: '20px' }}>
-                    {q.emoji}
-                  </div>
-
-                  <h2 style={{
-                    fontSize: '32px',
-                    fontFamily: '"Fredoka", sans-serif',
-                    color: '#1f2937',
-                    marginBottom: '10px',
-                    fontWeight: '700',
-                    lineHeight: '1.3'
-                  }}>
-                    {q.question}
-                  </h2>
-                  
-                  {q.description && (
-                    <p style={{
-                      fontSize: '16px',
-                      color: '#6b7280',
-                      margin: 0
-                    }}>
-                      {q.description}
-                    </p>
-                  )}
+                  <div style={{ fontSize: '80px', marginBottom: '20px' }}>{q.emoji}</div>
+                  <h2 style={{ fontSize: '28px', fontFamily: '"Fredoka", sans-serif', color: '#1f2937', marginBottom: '10px', fontWeight: '700', lineHeight: '1.3' }}>{q.question}</h2>
+                  {q.description && <p style={{ fontSize: '16px', color: '#6b7280', margin: 0 }}>{q.description}</p>}
                 </div>
-
                 <div style={{ display: 'grid', gap: '16px' }}>
-                  <button onClick={() => handleAnswer('yes')} style={{
-                    background: 'linear-gradient(135deg, #10b981 0%, #059669 100%)',
-                    color: 'white',
-                    border: 'none',
-                    borderRadius: '12px',
-                    padding: '20px',
-                    fontSize: '20px',
-                    fontFamily: '"Fredoka", sans-serif',
-                    fontWeight: '600',
-                    cursor: 'pointer',
-                    transition: 'transform 0.2s',
-                    boxShadow: '0 4px 12px rgba(16, 185, 129, 0.3)'
-                  }}
-                  onMouseEnter={(e) => e.target.style.transform = 'scale(1.02)'}
-                  onMouseLeave={(e) => e.target.style.transform = 'scale(1)'}>
+                  <button onClick={() => handleAnswer('yes')} style={{ background: 'linear-gradient(135deg, #10b981 0%, #059669 100%)', color: 'white', border: 'none', borderRadius: '12px', padding: '20px', fontSize: '20px', fontFamily: '"Fredoka", sans-serif', fontWeight: '600', cursor: 'pointer', transition: 'transform 0.2s', boxShadow: '0 4px 12px rgba(16,185,129,0.3)' }}
+                    onMouseEnter={(e) => e.target.style.transform = 'scale(1.02)'}
+                    onMouseLeave={(e) => e.target.style.transform = 'scale(1)'}>
                     👍 Yes
                   </button>
-
-                  <button onClick={() => handleAnswer('no')} style={{
-                    background: 'linear-gradient(135deg, #ef4444 0%, #dc2626 100%)',
-                    color: 'white',
-                    border: 'none',
-                    borderRadius: '12px',
-                    padding: '20px',
-                    fontSize: '20px',
-                    fontFamily: '"Fredoka", sans-serif',
-                    fontWeight: '600',
-                    cursor: 'pointer',
-                    transition: 'transform 0.2s',
-                    boxShadow: '0 4px 12px rgba(239, 68, 68, 0.3)'
-                  }}
-                  onMouseEnter={(e) => e.target.style.transform = 'scale(1.02)'}
-                  onMouseLeave={(e) => e.target.style.transform = 'scale(1)'}>
+                  <button onClick={() => handleAnswer('no')} style={{ background: 'linear-gradient(135deg, #ef4444 0%, #dc2626 100%)', color: 'white', border: 'none', borderRadius: '12px', padding: '20px', fontSize: '20px', fontFamily: '"Fredoka", sans-serif', fontWeight: '600', cursor: 'pointer', transition: 'transform 0.2s', boxShadow: '0 4px 12px rgba(239,68,68,0.3)' }}
+                    onMouseEnter={(e) => e.target.style.transform = 'scale(1.02)'}
+                    onMouseLeave={(e) => e.target.style.transform = 'scale(1)'}>
                     👎 No
                   </button>
                 </div>
@@ -798,21 +166,238 @@
           );
         };
 
-        const App = () => {
-          const [currentPage, setCurrentPage] = useState('home');
+        // ─── KIDS QUIZ ─────────────────────────────────────────────────────────────
+        const kidsQuestions = [
+          { id: 'fever', question: 'Do you have a fever?', emoji: '🌡️', weight: 5, description: '(100.4°F / 38°C or higher)' },
+          { id: 'vomit', question: 'Have you thrown up in the last 24 hours?', emoji: '🤢', weight: 5 },
+          { id: 'diarrhea', question: 'Do you have diarrhea?', emoji: '💩', weight: 4 },
+          { id: 'contagious', question: 'Does the doctor think you have something contagious?', emoji: '🦠', weight: 5, description: '(like strep, flu, pink eye, etc.)' },
+          { id: 'pain', question: 'Are you in serious pain?', emoji: '😫', weight: 4, description: "(not just 'my tummy feels weird')" },
+          { id: 'sleep', question: 'Did you sleep terribly last night?', emoji: '😴', weight: 2, description: '(like, genuinely almost no sleep)' },
+          { id: 'energy', question: 'Do you feel extremely tired or weak?', emoji: '🥱', weight: 3, description: "(not normal 'I don't wanna' tired)" },
+          { id: 'test', question: 'Is there a big test or presentation today?', emoji: '📝', weight: -2, description: '(just being honest...)' },
+          { id: 'cough', question: 'Do you have a bad cough?', emoji: '🤧', weight: 3, description: '(not just clearing your throat)' },
+          { id: 'headache', question: 'Do you have a pounding headache?', emoji: '🤕', weight: 3, description: '(worse than normal "meh" feeling)' },
+          { id: 'rash', question: 'Do you have a rash or unexplained spots?', emoji: '🔴', weight: 4, description: '(not just a random pimple)' },
+          { id: 'unicorn', question: 'Did you see a unicorn this morning?', emoji: '🦄', weight: 0, description: "(just checking if you're paying attention)" },
+          { id: 'stomach', question: 'Does your stomach hurt really bad?', emoji: '🤢', weight: 3, description: '(like, doubled over bad)' }
+        ];
 
+        const getKidsVerdict = (answers) => {
+          let score = 0;
+          kidsQuestions.forEach(q => { if (answers[q.id]) score += q.weight; });
+          if (score >= 10) return { verdict: 'STAY HOME', color: '#dc2626', emoji: '🏠', message: "Yeah, you should probably stay home. You're dealing with some legit symptoms that either mean you're contagious or you genuinely need rest.", advice: "Rest up, drink fluids, and get better. If symptoms get worse, tell a parent to call the doctor." };
+          if (score >= 5) return { verdict: 'MAYBE STAY HOME', color: '#f59e0b', emoji: '🤔', message: "This one's borderline. You have some symptoms, but not the really serious ones.", advice: "Talk it over with your parents. If you feel worse as the morning goes on, definitely stay home." };
+          if (score >= 1) return { verdict: 'PROBABLY GO TO SCHOOL', color: '#2563eb', emoji: '🎒', message: "You're not feeling 100%, but it's not bad enough to skip. You can probably make it through the day.", advice: "Take it easy today. Let your teacher know if you start feeling worse." };
+          return { verdict: 'GO TO SCHOOL', color: '#059669', emoji: '✅', message: "Nice try, but you're fine. This is classic 'I don't wanna' territory, not 'I'm actually sick.'", advice: "Time to face the music. You'll survive. We believe in you. 💪" };
+        };
+
+        // ─── ADULT WORK QUIZ ───────────────────────────────────────────────────────
+        const workQuestions = [
+          { id: 'fever', question: 'Do you have a fever?', emoji: '🌡️', weight: 6, description: '(100.4°F / 38°C or higher — yes, take your actual temperature)' },
+          { id: 'vomit', question: 'Have you vomited or had diarrhea in the last 12 hours?', emoji: '🤢', weight: 6, description: '(Not the meal you regret. Actual illness.)' },
+          { id: 'contagious', question: 'Are you likely contagious?', emoji: '🦠', weight: 5, description: '(flu, strep, norovirus, COVID — things your coworkers will hate you for)' },
+          { id: 'function', question: 'Are you genuinely unable to function?', emoji: '😵', weight: 5, description: '(Cannot sit upright, concentrate, or form coherent sentences)' },
+          { id: 'deadline', question: 'Do you have a major deadline or meeting only you can handle?', emoji: '📅', weight: -3, description: '(Be honest. Is it really only you?)' },
+          { id: 'wfh', question: 'Could you reasonably work from home instead?', emoji: '💻', weight: -3, description: '(Sick enough to miss the office, but not sick enough to miss work entirely?)' },
+          { id: 'sleep', question: 'Did you get fewer than 3 hours of sleep due to illness?', emoji: '😴', weight: 4, description: "(Insomnia from stress doesn't count, sorry)" },
+          { id: 'meds', question: 'Are you on medication that impairs your ability to work safely?', emoji: '💊', weight: 4, description: '(Heavy painkillers, drowsy antihistamines, etc.)' },
+          { id: 'monday', question: 'Is it a Monday or Friday?', emoji: '📆', weight: -1, description: '(Just adding context. No judgment. Totally judgment.)' },
+          { id: 'yesterday', question: 'Did you go out last night?', emoji: '🍻', weight: -2, description: "(We're not saying it's a hangover. We're just... noting it.)" },
+          { id: 'doctor', question: 'Have you been told by a doctor to rest?', emoji: '👨‍⚕️', weight: 5 },
+          { id: 'colleagues', question: 'Would your presence put colleagues at risk?', emoji: '😷', weight: 4, description: '(Sneezing on everyone definitely counts)' }
+        ];
+
+        const getWorkVerdict = (answers) => {
+          let score = 0;
+          workQuestions.forEach(q => { if (answers[q.id]) score += q.weight; });
+          if (score >= 12) return { verdict: 'STAY HOME', color: '#dc2626', emoji: '🛌', message: "You're actually unwell. Your body is filing a formal complaint and HR would side with it. Rest.", advice: "Send the email, set the out-of-office, and lie down. The company survived before you and it'll manage today." };
+          if (score >= 7) return { verdict: 'CONSIDER STAYING HOME', color: '#f59e0b', emoji: '🤔', message: "You're in the grey zone. Not 'call an ambulance' sick, but not 'fully operational' either.", advice: "If you can work from home, do that. If you must be in-person, consider whether you'd be more liability than asset today." };
+          if (score >= 3) return { verdict: 'PROBABLY GO IN', color: '#2563eb', emoji: '💼', message: "You're under the weather but functional. Tough it out — with snacks and tea.", advice: "Hydrate, grab some DayQuil, and manage your energy. But don't sneeze on anyone. Seriously." };
+          return { verdict: 'GO TO WORK', color: '#059669', emoji: '✅', message: "You're fine. This is your inner child trying to stay home and watch TV. Your inner adult knows better.", advice: "Get dressed. Make coffee. You've got this. You can complain about Mondays at the water cooler like everyone else. ☕" };
+        };
+
+        // ─── ADULT SOCIAL QUIZ ─────────────────────────────────────────────────────
+        const socialQuestions = [
+          { id: 'sick', question: 'Are you genuinely sick or in physical pain?', emoji: '🤒', weight: 6, description: '(fever, injury, actual illness — not just tired)' },
+          { id: 'obligated', question: 'Did you RSVP or make a firm commitment to be there?', emoji: '📩', weight: -3, description: '(Someone is counting on your presence specifically)' },
+          { id: 'dread', question: 'Have you been dreading this event for weeks?', emoji: '😬', weight: 2, description: '(Genuine dread, not normal pre-social jitters)' },
+          { id: 'energy', question: 'Is your social battery completely dead?', emoji: '🪫', weight: 3, description: '(Introvert emergency. Burnout is real.)' },
+          { id: 'important', question: 'Is this event important to someone you really care about?', emoji: '❤️', weight: -4, description: "(Their birthday, their big moment, their thing — not just a casual hangout)" },
+          { id: 'cancel', question: 'Have you already cancelled on this person or group recently?', emoji: '🚫', weight: -3, description: '(More than once in the last month = worth noting)' },
+          { id: 'fomo', question: 'Will you actually regret missing this?', emoji: '😔', weight: -3, description: '(Honest gut check — not in-the-moment regret, actual regret)' },
+          { id: 'alternative', question: 'Do you have a genuinely good reason or prior commitment?', emoji: '📋', weight: 3, description: '(Not "I might be tired" — an actual thing)' },
+          { id: 'peoplepleasing', question: 'Are you only going out of guilt or people-pleasing?', emoji: '😰', weight: 2, description: '(No shade — this is actually a valid reason to skip)' },
+          { id: 'couch', question: 'Honestly — is the couch calling louder than the event?', emoji: '🛋️', weight: 1, description: '(Sometimes valid. Sometimes avoidance. Which is this?)' },
+          { id: 'mentalhealth', question: 'Will your mental health genuinely be worse if you go?', emoji: '🧠', weight: 4, description: '(Not just uncomfortable — actually harmful to your wellbeing)' },
+          { id: 'rain', question: "Is the main reason it's cold or raining outside?", emoji: '🌧️', weight: -2, description: '(Bold of you to admit that. Points deducted for weather crimes.)' }
+        ];
+
+        const getSocialVerdict = (answers) => {
+          let score = 0;
+          socialQuestions.forEach(q => { if (answers[q.id]) score += q.weight; });
+          if (score >= 9) return { verdict: 'SKIP IT', color: '#dc2626', emoji: '🛋️', message: "You have real reasons to stay home. Your wellbeing matters more than attendance. Honour that.", advice: "Send a kind message, be honest if you can, and rest without guilt. Real friends get it. And if they don't — that's also useful information." };
+          if (score >= 4) return { verdict: 'YOUR CALL', color: '#f59e0b', emoji: '🤷', message: "It's genuinely 50/50. You're not obligated, but you're not suffering either. This one's on you.", advice: "If you go, commit and try to enjoy it. If you stay home, do something that actually restores you — not just guilt-scrolling on the couch." };
+          if (score >= 0) return { verdict: 'PROBABLY GO', color: '#2563eb', emoji: '🎉', message: "You want to want to stay home, but the signs point to going. You'll probably have a better time than you think.", advice: "Give it an hour. You can always leave early. The anticipation is usually worse than the thing itself." };
+          return { verdict: 'GO. JUST GO.', color: '#059669', emoji: '✅', message: "You're dodging this for no good reason and you know it. This event matters — to you, to someone else, or both.", advice: "Put on real clothes. Show up. You'll be glad you did. The couch will still be there tomorrow. 🛋️" };
+        };
+
+        // ─── ADULT MODE SELECTOR ───────────────────────────────────────────────────
+        const AdultModeSelector = ({ onSelect, onBack }) => (
+          <div style={{ minHeight: 'calc(100vh - 80px)', background: 'linear-gradient(135deg, #1e293b 0%, #334155 100%)', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '40px 20px' }}>
+            <div style={{ maxWidth: '700px', width: '100%', textAlign: 'center', animation: 'slideUp 0.5s ease-out' }}>
+              <div style={{ fontSize: '80px', marginBottom: '20px' }}>🤔</div>
+              <h1 style={{ fontFamily: '"Fredoka", sans-serif', fontSize: '48px', color: 'white', marginBottom: '16px', fontWeight: '700' }}>What are you trying to skip?</h1>
+              <p style={{ fontSize: '18px', color: '#94a3b8', marginBottom: '50px' }}>No judgment. Well... a little. We'll help you figure it out.</p>
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '24px', marginBottom: '40px' }}>
+                {[
+                  { id: 'work', emoji: '💼', label: 'Work / Job', desc: "Calling in sick, working from home, or just... not going in today.", from: '#0ea5e9', to: '#6366f1' },
+                  { id: 'social', emoji: '🎉', label: 'Social Event', desc: "Party, dinner, hangout, family thing — something you said yes to but now... hmm.", from: '#f97316', to: '#ec4899' }
+                ].map(opt => (
+                  <button key={opt.id} onClick={() => onSelect(opt.id)} style={{ background: 'white', border: '3px solid transparent', borderRadius: '20px', padding: '40px 30px', cursor: 'pointer', textAlign: 'center', transition: 'all 0.25s', boxShadow: '0 8px 30px rgba(0,0,0,0.2)' }}
+                    onMouseEnter={(e) => { e.currentTarget.style.transform = 'translateY(-6px)'; e.currentTarget.style.boxShadow = '0 16px 40px rgba(0,0,0,0.3)'; e.currentTarget.style.borderColor = opt.from; }}
+                    onMouseLeave={(e) => { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.boxShadow = '0 8px 30px rgba(0,0,0,0.2)'; e.currentTarget.style.borderColor = 'transparent'; }}>
+                    <div style={{ fontSize: '60px', marginBottom: '16px' }}>{opt.emoji}</div>
+                    <div style={{ fontFamily: '"Fredoka", sans-serif', fontSize: '26px', fontWeight: '700', color: '#1f2937', marginBottom: '12px' }}>{opt.label}</div>
+                    <div style={{ fontSize: '15px', color: '#6b7280', lineHeight: '1.5' }}>{opt.desc}</div>
+                  </button>
+                ))}
+              </div>
+              <button onClick={onBack} style={{ background: 'transparent', color: '#94a3b8', border: 'none', fontSize: '15px', cursor: 'pointer', fontFamily: '"Space Mono", monospace' }}>
+                ← Back to audience selection
+              </button>
+            </div>
+          </div>
+        );
+
+        // ─── HOMEPAGE ──────────────────────────────────────────────────────────────
+        const HomePage = ({ onSelect }) => (
+          <div style={{ minHeight: 'calc(100vh - 80px)', background: 'linear-gradient(160deg, #0f172a 0%, #1e293b 40%, #312e81 100%)', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '40px 20px' }}>
+            <div style={{ maxWidth: '820px', width: '100%', textAlign: 'center', animation: 'fadeIn 0.7s ease-out' }}>
+              <div style={{ fontSize: '90px', marginBottom: '24px', animation: 'bounce 3s infinite' }}>🏠</div>
+              <h1 style={{ fontFamily: '"Fredoka", sans-serif', fontSize: '64px', color: 'white', marginBottom: '16px', fontWeight: '700', lineHeight: '1.1' }}>Can I Stay Home?</h1>
+              <p style={{ fontSize: '20px', color: '#94a3b8', marginBottom: '60px', lineHeight: '1.6' }}>
+                The honest reality check — for every age.<br />Who's asking?
+              </p>
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '28px', marginBottom: '50px' }}>
+                {[
+                  { id: 'kids', emoji: '🎒', label: "I'm a Kid", sublabel: '(or a parent asking for one)', desc: "School check-up. Are the symptoms real or is it a classic case of the Mondays?", from: '#667eea', to: '#764ba2', badge: 'Ages 5–17' },
+                  { id: 'adults', emoji: '☕', label: "I'm an Adult", sublabel: '(allegedly)', desc: "Work or social event? Let's figure out if this is legit or a couch conspiracy.", from: '#0ea5e9', to: '#ec4899', badge: 'Ages 18+' }
+                ].map(opt => (
+                  <button key={opt.id} onClick={() => onSelect(opt.id)} style={{ background: 'rgba(255,255,255,0.05)', backdropFilter: 'blur(10px)', border: '2px solid rgba(255,255,255,0.1)', borderRadius: '24px', padding: '50px 36px', cursor: 'pointer', textAlign: 'center', transition: 'all 0.3s', position: 'relative', overflow: 'hidden' }}
+                    onMouseEnter={(e) => { e.currentTarget.style.background = `linear-gradient(135deg, ${opt.from}22 0%, ${opt.to}22 100%)`; e.currentTarget.style.borderColor = opt.from; e.currentTarget.style.transform = 'translateY(-8px)'; e.currentTarget.style.boxShadow = `0 20px 50px ${opt.from}44`; }}
+                    onMouseLeave={(e) => { e.currentTarget.style.background = 'rgba(255,255,255,0.05)'; e.currentTarget.style.borderColor = 'rgba(255,255,255,0.1)'; e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.boxShadow = 'none'; }}>
+                    <div style={{ position: 'absolute', top: '16px', right: '16px', background: `linear-gradient(135deg, ${opt.from}, ${opt.to})`, color: 'white', fontSize: '12px', fontWeight: '700', padding: '4px 12px', borderRadius: '999px' }}>{opt.badge}</div>
+                    <div style={{ fontSize: '72px', marginBottom: '20px' }}>{opt.emoji}</div>
+                    <div style={{ fontFamily: '"Fredoka", sans-serif', fontSize: '32px', fontWeight: '700', color: 'white', marginBottom: '6px' }}>{opt.label}</div>
+                    <div style={{ fontSize: '14px', color: '#94a3b8', marginBottom: '16px', fontStyle: 'italic' }}>{opt.sublabel}</div>
+                    <div style={{ fontSize: '15px', color: '#cbd5e1', lineHeight: '1.6' }}>{opt.desc}</div>
+                  </button>
+                ))}
+              </div>
+              <p style={{ fontSize: '13px', color: '#475569' }}>Not medical or HR advice. Just a very opinionated quiz with good intentions. 🫶</p>
+            </div>
+          </div>
+        );
+
+        // ─── ABOUT PAGE ────────────────────────────────────────────────────────────
+        const AboutPage = () => (
+          <div style={{ minHeight: 'calc(100vh - 80px)', background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)', padding: '60px 20px' }}>
+            <div style={{ maxWidth: '800px', margin: '0 auto', background: 'white', borderRadius: '24px', padding: '60px 50px', boxShadow: '0 20px 60px rgba(0,0,0,0.3)' }}>
+              <h1 style={{ fontFamily: '"Fredoka", sans-serif', fontSize: '48px', color: '#1f2937', marginBottom: '30px', textAlign: 'center' }}>About This Tool</h1>
+              <div style={{ fontSize: '18px', lineHeight: '1.8', color: '#374151', marginBottom: '40px' }}>
+                <p style={{ marginBottom: '20px' }}><strong>Can I Stay Home?</strong> started as a tool for kids and parents navigating those tricky sick-day calls. It's grown into something for adults too — because let's be honest, we never really stop needing a sanity check.</p>
+                <p style={{ marginBottom: '20px' }}>Whether it's a kid with a suspicious tummy ache the morning of a spelling test, or an adult staring at their work calendar wondering if today is a legitimate sick day or just a deep need for a duvet, this tool tries to be honest where we sometimes aren't with ourselves.</p>
+              </div>
+              <div style={{ background: '#fef3c7', border: '3px solid #f59e0b', borderRadius: '12px', padding: '30px', marginBottom: '40px' }}>
+                <h3 style={{ fontFamily: '"Fredoka", sans-serif', fontSize: '24px', color: '#92400e', marginBottom: '15px', marginTop: 0 }}>⚠️ Important Note</h3>
+                <p style={{ margin: 0, fontSize: '16px', color: '#78350f', lineHeight: '1.6' }}>This tool is <strong>not medical advice</strong>, not HR policy, and not a therapist. It's a fun, reflective tool. Parents should always trust their instincts. Adults should too.</p>
+              </div>
+              <h2 style={{ fontFamily: '"Fredoka", sans-serif', fontSize: '32px', color: '#1f2937', marginBottom: '20px' }}>For Parents & Kids</h2>
+              <div style={{ fontSize: '18px', lineHeight: '1.8', color: '#374151', marginBottom: '40px' }}>
+                <p style={{ marginBottom: '20px' }}><strong>Why this works:</strong> Kids respond better to "the computer says" than "mom says." This removes the emotional battle and creates a shared reference point.</p>
+                <p style={{ marginBottom: '20px' }}><strong>Teaching moments:</strong> It helps kids learn to tell the difference between "I don't feel like it" and "I actually don't feel well." That's a genuine life skill.</p>
+              </div>
+              <h2 style={{ fontFamily: '"Fredoka", sans-serif', fontSize: '32px', color: '#1f2937', marginBottom: '20px' }}>For Adults</h2>
+              <div style={{ fontSize: '18px', lineHeight: '1.8', color: '#374151' }}>
+                <p style={{ marginBottom: '20px' }}><strong>Work check:</strong> We're not here to shame you. Burnout is real. So is genuine illness. So is using a hangover as a sick day. The quiz just asks you to be honest — something that's harder than it sounds at 7am.</p>
+                <p style={{ margin: 0 }}><strong>Social check:</strong> Boundaries matter. Rest matters. But so do the people who invited you. The quiz helps you separate "I need genuine rest" from "I'm just anxious and the couch is comfortable."</p>
+              </div>
+            </div>
+          </div>
+        );
+
+        // ─── FAQ PAGE ──────────────────────────────────────────────────────────────
+        const FAQPage = () => {
+          const [openIndex, setOpenIndex] = useState(null);
+          const faqs = [
+            { question: "Is this actually accurate?", answer: "For kids, it's based on common medical guidelines. For adults, it's based on common sense and a healthy dose of gentle sarcasm. It's not a substitute for actual judgment — yours or a doctor's." },
+            { question: "My kid failed the check but seems fine. Should they still go?", answer: "Trust your gut. The tool is conservative by design. If your parental instinct says they're fine and just being dramatic, override it. You know your kid." },
+            { question: "The work quiz told me to go in but I feel awful.", answer: "Then stay home. Seriously. The quiz asks honest questions but it doesn't know your body. If you feel genuinely unwell, rest. Coming in to prove a point to a quiz is... a choice." },
+            { question: "What about mental health days?", answer: "Mental health is real health. The adult social quiz tries to account for emotional burnout, but if you genuinely need a day off to function, that's valid. For kids, the tool focuses on physical illness — but emotional wellbeing matters equally." },
+            { question: "Can my kid game the system?", answer: "Kids are clever. The quiz asks some objective questions (fever, vomiting) that are harder to fake, plus a unicorn question to check attention. But you'll need to verify answers are honest." },
+            { question: "The social quiz said I should go. But I really don't want to.", answer: "Then don't go, but be honest with yourself about why. The quiz helps you reflect, not dictate. If you skip it, own that decision — don't blame the quiz." },
+            { question: "My school or workplace has different rules. Which takes precedence?", answer: "Always follow your institution's actual policies. This tool is a general reflective guide. Official rules win." }
+          ];
           return (
-            <div>
-              <Navigation currentPage={currentPage} setCurrentPage={setCurrentPage} />
-              {currentPage === 'home' && <QuizPage />}
-              {currentPage === 'about' && <AboutPage />}
-              {currentPage === 'faq' && <FAQPage />}
+            <div style={{ minHeight: 'calc(100vh - 80px)', background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)', padding: '60px 20px' }}>
+              <div style={{ maxWidth: '800px', margin: '0 auto', background: 'white', borderRadius: '24px', padding: '60px 50px', boxShadow: '0 20px 60px rgba(0,0,0,0.3)' }}>
+                <h1 style={{ fontFamily: '"Fredoka", sans-serif', fontSize: '48px', color: '#1f2937', marginBottom: '20px', textAlign: 'center' }}>Frequently Asked Questions</h1>
+                <p style={{ fontSize: '18px', color: '#6b7280', textAlign: 'center', marginBottom: '50px' }}>Got questions? We've got answers.</p>
+                <div style={{ display: 'grid', gap: '16px' }}>
+                  {faqs.map((faq, i) => (
+                    <div key={i} style={{ border: '2px solid #e5e7eb', borderRadius: '12px', overflow: 'hidden' }}>
+                      <button onClick={() => setOpenIndex(openIndex === i ? null : i)} style={{ width: '100%', padding: '24px', background: openIndex === i ? '#f9fafb' : 'white', border: 'none', textAlign: 'left', cursor: 'pointer', display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: '18px', fontFamily: '"Fredoka", sans-serif', fontWeight: '600', color: '#1f2937' }}>
+                        <span>{faq.question}</span>
+                        <span style={{ fontSize: '20px', transition: 'transform 0.2s', transform: openIndex === i ? 'rotate(180deg)' : 'rotate(0deg)' }}>▼</span>
+                      </button>
+                      {openIndex === i && <div style={{ padding: '0 24px 24px', fontSize: '16px', lineHeight: '1.7', color: '#4b5563' }}>{faq.answer}</div>}
+                    </div>
+                  ))}
+                </div>
+              </div>
             </div>
           );
         };
 
-        const root = ReactDOM.createRoot(document.getElementById('root'));
-        root.render(<App />);
+        // ─── APP ROOT ──────────────────────────────────────────────────────────────
+        const App = () => {
+          const [currentPage, setCurrentPage] = useState('home');
+          const [mode, setMode] = useState(null);       // 'kids' | 'adults'
+          const [adultMode, setAdultMode] = useState(null); // 'work' | 'social'
+
+          const resetAll = () => { setMode(null); setAdultMode(null); setCurrentPage('home'); };
+
+          const renderContent = () => {
+            if (currentPage === 'about') return <AboutPage />;
+            if (currentPage === 'faq') return <FAQPage />;
+            if (!mode) return <HomePage onSelect={setMode} />;
+            if (mode === 'kids') return (
+              <QuizShell questions={kidsQuestions} getVerdict={getKidsVerdict} onReset={() => setMode(null)}
+                accentFrom="#667eea" accentTo="#764ba2" disclaimer="💡 For parents: This is a fun tool, not medical advice. Trust your parental instincts!" />
+            );
+            if (mode === 'adults') {
+              if (!adultMode) return <AdultModeSelector onSelect={setAdultMode} onBack={() => setMode(null)} />;
+              if (adultMode === 'work') return (
+                <QuizShell questions={workQuestions} getVerdict={getWorkVerdict} onReset={() => setAdultMode(null)}
+                  accentFrom="#0ea5e9" accentTo="#6366f1" disclaimer="Not a doctor. Not your HR department. Just a vibe check." />
+              );
+              if (adultMode === 'social') return (
+                <QuizShell questions={socialQuestions} getVerdict={getSocialVerdict} onReset={() => setAdultMode(null)}
+                  accentFrom="#f97316" accentTo="#ec4899" disclaimer="Not a therapist. Just a mirror. Be honest with yourself. 🪞" />
+              );
+            }
+          };
+
+          return (
+            <div>
+              <Navigation currentPage={currentPage} setCurrentPage={(p) => { setCurrentPage(p); if (p === 'home') { setMode(null); setAdultMode(null); } }} onLogoClick={resetAll} />
+              {renderContent()}
+            </div>
+          );
+        };
+
+        ReactDOM.createRoot(document.getElementById('root')).render(<App />);
     </script>
 </body>
 </html>
