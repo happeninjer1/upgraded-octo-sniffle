@@ -26,10 +26,39 @@
         * { box-sizing: border-box; }
         body { margin: 0; padding: 0; font-family: 'Space Mono', monospace; }
         #root { min-height: 100vh; }
-        @media (max-width: 768px) { .nav-links { display: none; } }
         @keyframes slideUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
         @keyframes bounce { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
+        
+        /* Mobile-specific improvements */
+        @media (max-width: 768px) {
+            .nav-links { display: none; }
+            
+            /* Smaller text on mobile */
+            h1 { font-size: 40px !important; }
+            .hero-title { font-size: 48px !important; }
+            .hero-subtitle { font-size: 16px !important; }
+            
+            /* Single column layouts */
+            .grid-2-cols { 
+                grid-template-columns: 1fr !important;
+                gap: 20px !important;
+            }
+            
+            /* Reduce padding on mobile */
+            .mobile-padding { padding: 30px 20px !important; }
+            .mobile-nav { padding: 15px 20px !important; }
+            
+            /* Smaller buttons */
+            .mobile-btn { 
+                padding: 16px 32px !important;
+                font-size: 18px !important;
+            }
+            
+            /* Emoji sizes */
+            .mobile-emoji { font-size: 60px !important; }
+            .mobile-emoji-large { font-size: 70px !important; }
+        }
     </style>
 </head>
 <body>
@@ -42,20 +71,20 @@
 
         // ─── NAVIGATION ────────────────────────────────────────────────────────────
         const Navigation = ({ currentPage, setCurrentPage, onLogoClick }) => (
-          <nav style={{
+          <nav className="mobile-nav" style={{
             background: 'rgba(255,255,255,0.95)', backdropFilter: 'blur(10px)',
             padding: '20px 40px', display: 'flex', justifyContent: 'space-between',
             alignItems: 'center', boxShadow: '0 2px 20px rgba(0,0,0,0.1)',
             position: 'sticky', top: 0, zIndex: 1000
           }}>
             <div style={{
-              fontFamily: '"Fredoka", sans-serif', fontSize: '24px', fontWeight: '700',
+              fontFamily: '"Fredoka", sans-serif', fontSize: '20px', fontWeight: '700',
               background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
               WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', cursor: 'pointer'
             }} onClick={onLogoClick}>
               🏠 Can I Stay Home?
             </div>
-            <div className="nav-links" style={{ display: 'flex', gap: '30px' }}>
+            <div className="nav-links" style={{ display: 'flex', gap: '20px' }}>
               {['Home', 'About', 'FAQ', 'Privacy'].map(page => (
                 <button key={page} onClick={() => setCurrentPage(page.toLowerCase())} style={{
                   background: currentPage === page.toLowerCase()
@@ -148,7 +177,7 @@
                       <p style={{ fontSize: '14px', color: '#9ca3af', marginBottom: '16px', fontWeight: '700', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
                         🛒 You might need these
                       </p>
-                      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
+                      <div className="grid-2-cols" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
                         {[
                           { label: '🌡️ Digital Thermometer', url: 'https://www.amazon.com/s?k=digital+thermometer&tag=YOURTAG-20' },
                           { label: '🤒 Fever Reducer', url: 'https://www.amazon.com/s?k=fever+reducer+adults&tag=YOURTAG-20' },
@@ -250,21 +279,155 @@
         };
 
         // ─── KIDS QUIZ ─────────────────────────────────────────────────────────────
-        const kidsQuestions = [
-          { id: 'fever', question: 'Do you have a fever?', emoji: '🌡️', weight: 5, description: '(100.4°F / 38°C or higher)' },
-          { id: 'vomit', question: 'Have you thrown up in the last 24 hours?', emoji: '🤢', weight: 5 },
-          { id: 'diarrhea', question: 'Do you have diarrhea?', emoji: '💩', weight: 4 },
-          { id: 'contagious', question: 'Does the doctor think you have something contagious?', emoji: '🦠', weight: 5, description: '(like strep, flu, pink eye, etc.)' },
-          { id: 'pain', question: 'Are you in serious pain?', emoji: '😫', weight: 4, description: "(not just 'my tummy feels weird')" },
-          { id: 'sleep', question: 'Did you sleep terribly last night?', emoji: '😴', weight: 2, description: '(like, genuinely almost no sleep)' },
-          { id: 'energy', question: 'Do you feel extremely tired or weak?', emoji: '🥱', weight: 3, description: "(not normal 'I don't wanna' tired)" },
-          { id: 'test', question: 'Is there a big test or presentation today?', emoji: '📝', weight: -2, description: '(just being honest...)' },
-          { id: 'cough', question: 'Do you have a bad cough?', emoji: '🤧', weight: 3, description: '(not just clearing your throat)' },
-          { id: 'headache', question: 'Do you have a pounding headache?', emoji: '🤕', weight: 3, description: '(worse than normal "meh" feeling)' },
-          { id: 'rash', question: 'Do you have a rash or unexplained spots?', emoji: '🔴', weight: 4, description: '(not just a random pimple)' },
-          { id: 'unicorn', question: 'Did you see a unicorn this morning?', emoji: '🦄', weight: 0, description: "(just checking if you're paying attention)" },
-          { id: 'stomach', question: 'Does your stomach hurt really bad?', emoji: '🤢', weight: 3, description: '(like, doubled over bad)' }
-        ];
+        // Question variants for freshness
+        const pickVariant = (variants) => variants[Math.floor(Math.random() * variants.length)];
+        
+        const kidsQuestionBank = {
+          fever: {
+            id: 'fever',
+            variants: [
+              { question: 'Do you have a fever?', description: '(100.4°F / 38°C or higher)' },
+              { question: 'Is your temperature high?', description: '(100.4°F / 38°C or higher)' },
+              { question: 'Are you running a fever?', description: '(100.4°F / 38°C or higher)' }
+            ],
+            emoji: '🌡️',
+            weight: 5
+          },
+          vomit: {
+            id: 'vomit',
+            variants: [
+              { question: 'Have you thrown up in the last 24 hours?' },
+              { question: 'Have you been vomiting today?' },
+              { question: 'Did you throw up recently?' }
+            ],
+            emoji: '🤢',
+            weight: 5
+          },
+          diarrhea: {
+            id: 'diarrhea',
+            variants: [
+              { question: 'Do you have diarrhea?' },
+              { question: 'Is your stomach upset with bathroom issues?' },
+              { question: 'Are you having tummy troubles?' }
+            ],
+            emoji: '💩',
+            weight: 4
+          },
+          contagious: {
+            id: 'contagious',
+            variants: [
+              { question: 'Does the doctor think you have something contagious?', description: '(like strep, flu, pink eye, etc.)' },
+              { question: 'Did a doctor say you might be contagious?', description: '(strep, flu, COVID, etc.)' },
+              { question: 'Do you have a contagious illness?', description: '(that could spread to others)' }
+            ],
+            emoji: '🦠',
+            weight: 5
+          },
+          pain: {
+            id: 'pain',
+            variants: [
+              { question: 'Are you in serious pain?', description: "(not just 'my tummy feels weird')" },
+              { question: 'Does something hurt really badly?', description: '(not just uncomfortable)' },
+              { question: 'Are you dealing with real pain?', description: '(more than just "meh")' }
+            ],
+            emoji: '😫',
+            weight: 4
+          },
+          sleep: {
+            id: 'sleep',
+            variants: [
+              { question: 'Did you sleep terribly last night?', description: '(like, genuinely almost no sleep)' },
+              { question: 'Did you barely get any sleep?', description: '(less than 4 hours)' },
+              { question: 'Are you running on no sleep?', description: '(genuine exhaustion)' }
+            ],
+            emoji: '😴',
+            weight: 2
+          },
+          energy: {
+            id: 'energy',
+            variants: [
+              { question: 'Do you feel extremely tired or weak?', description: "(not normal 'I don't wanna' tired)" },
+              { question: 'Are you totally exhausted?', description: "(actually can't function)" },
+              { question: 'Do you feel like you have zero energy?', description: '(not just sleepy)' }
+            ],
+            emoji: '🥱',
+            weight: 3
+          },
+          test: {
+            id: 'test',
+            variants: [
+              { question: 'Is there a big test or presentation today?', description: '(just being honest...)' },
+              { question: 'Do you have something important at school today?', description: '(test, project, etc.)' },
+              { question: 'Is there something stressful happening at school today?', description: '(be real with us)' }
+            ],
+            emoji: '📝',
+            weight: -2
+          },
+          cough: {
+            id: 'cough',
+            variants: [
+              { question: 'Do you have a bad cough?', description: '(not just clearing your throat)' },
+              { question: 'Are you coughing a lot?', description: '(more than just tickly)' },
+              { question: 'Is your cough pretty bad?', description: "(not just a little throat clear)" }
+            ],
+            emoji: '🤧',
+            weight: 3
+          },
+          headache: {
+            id: 'headache',
+            variants: [
+              { question: 'Do you have a pounding headache?', description: '(worse than normal "meh" feeling)' },
+              { question: 'Does your head hurt badly?', description: '(actual pain, not just tired)' },
+              { question: 'Is your headache really bad?', description: '(more than just a little ache)' }
+            ],
+            emoji: '🤕',
+            weight: 3
+          },
+          rash: {
+            id: 'rash',
+            variants: [
+              { question: 'Do you have a rash or unexplained spots?', description: '(not just a random pimple)' },
+              { question: 'Is there a weird rash on your skin?', description: '(spots, bumps, red patches)' },
+              { question: 'Do you have any unusual skin issues?', description: '(rash, spots, bumps)' }
+            ],
+            emoji: '🔴',
+            weight: 4
+          },
+          attention: {
+            id: 'unicorn',
+            variants: [
+              { question: 'Did you see a unicorn this morning?', description: "(just checking if you're paying attention)" },
+              { question: 'Can you fly like a superhero?', description: '(attention check!)' },
+              { question: 'Did you eat a cloud for breakfast?', description: "(making sure you're reading)" },
+              { question: 'Are you secretly a robot?', description: '(just testing if you're awake)' },
+              { question: 'Do you have magical powers?', description: "(we know the answer to this)" }
+            ],
+            emoji: '🦄',
+            weight: 0
+          },
+          stomach: {
+            id: 'stomach',
+            variants: [
+              { question: 'Does your stomach hurt really bad?', description: '(like, doubled over bad)' },
+              { question: 'Is your tummy pain really serious?', description: '(more than just uncomfortable)' },
+              { question: 'Do you have major stomach pain?', description: '(really hurts, not just feels weird)' }
+            ],
+            emoji: '🤢',
+            weight: 3
+          }
+        };
+
+        const kidsQuestions = Object.keys(kidsQuestionBank).map(key => {
+          const q = kidsQuestionBank[key];
+          const chosen = pickVariant(q.variants);
+          return {
+            id: q.id,
+            question: chosen.question,
+            description: chosen.description,
+            emoji: q.emoji,
+            weight: q.weight
+          };
+        });
 
         const getKidsVerdict = (answers) => {
           let score = 0;
@@ -276,20 +439,122 @@
         };
 
         // ─── ADULT WORK QUIZ ───────────────────────────────────────────────────────
-        const workQuestions = [
-          { id: 'fever', question: 'Do you have a fever?', emoji: '🌡️', weight: 6, description: '(100.4°F / 38°C or higher — yes, take your actual temperature)' },
-          { id: 'vomit', question: 'Have you vomited or had diarrhea in the last 12 hours?', emoji: '🤢', weight: 6, description: '(Not the meal you regret. Actual illness.)' },
-          { id: 'contagious', question: 'Are you likely contagious?', emoji: '🦠', weight: 5, description: '(flu, strep, norovirus, COVID — things your coworkers will hate you for)' },
-          { id: 'function', question: 'Are you genuinely unable to function?', emoji: '😵', weight: 5, description: '(Cannot sit upright, concentrate, or form coherent sentences)' },
-          { id: 'deadline', question: 'Do you have a major deadline or meeting only you can handle?', emoji: '📅', weight: -3, description: '(Be honest. Is it really only you?)' },
-          { id: 'wfh', question: 'Could you reasonably work from home instead?', emoji: '💻', weight: -3, description: '(Sick enough to miss the office, but not sick enough to miss work entirely?)' },
-          { id: 'sleep', question: 'Did you get fewer than 3 hours of sleep due to illness?', emoji: '😴', weight: 4, description: "(Insomnia from stress doesn't count, sorry)" },
-          { id: 'meds', question: 'Are you on medication that impairs your ability to work safely?', emoji: '💊', weight: 4, description: '(Heavy painkillers, drowsy antihistamines, etc.)' },
-          { id: 'monday', question: 'Is it a Monday or Friday?', emoji: '📆', weight: -1, description: '(Just adding context. No judgment. Totally judgment.)' },
-          { id: 'yesterday', question: 'Did you go out last night?', emoji: '🍻', weight: -2, description: "(We're not saying it's a hangover. We're just... noting it.)" },
-          { id: 'doctor', question: 'Have you been told by a doctor to rest?', emoji: '👨‍⚕️', weight: 5 },
-          { id: 'colleagues', question: 'Would your presence put colleagues at risk?', emoji: '😷', weight: 4, description: '(Sneezing on everyone definitely counts)' }
-        ];
+        const workQuestionBank = {
+          fever: {
+            id: 'fever',
+            variants: [
+              { question: 'Do you have a fever?', description: '(100.4°F / 38°C or higher — yes, take your actual temperature)' },
+              { question: 'Is your temperature elevated?', description: '(Actually check — 100.4°F / 38°C or higher)' }
+            ],
+            emoji: '🌡️',
+            weight: 6
+          },
+          vomit: {
+            id: 'vomit',
+            variants: [
+              { question: 'Have you vomited or had diarrhea in the last 12 hours?', description: '(Not the meal you regret. Actual illness.)' },
+              { question: 'Are you dealing with vomiting or bathroom issues?', description: '(The kind that means you're actually sick)' }
+            ],
+            emoji: '🤢',
+            weight: 6
+          },
+          contagious: {
+            id: 'contagious',
+            variants: [
+              { question: 'Are you likely contagious?', description: '(flu, strep, norovirus, COVID — things your coworkers will hate you for)' },
+              { question: 'Could you spread this to your coworkers?', description: '(contagious illness that spreads)' }
+            ],
+            emoji: '🦠',
+            weight: 5
+          },
+          function: {
+            id: 'function',
+            variants: [
+              { question: 'Are you genuinely unable to function?', description: '(Cannot sit upright, concentrate, or form coherent sentences)' },
+              { question: 'Can you actually do your job today?', description: '(Be honest about your capability)' }
+            ],
+            emoji: '😵',
+            weight: 5
+          },
+          deadline: {
+            id: 'deadline',
+            variants: [
+              { question: 'Do you have a major deadline or meeting only you can handle?', description: '(Be honest. Is it really only you?)' },
+              { question: 'Is there something critical today that needs you specifically?', description: '(That only you can do?)' }
+            ],
+            emoji: '📅',
+            weight: -3
+          },
+          wfh: {
+            id: 'wfh',
+            variants: [
+              { question: 'Could you reasonably work from home instead?', description: '(Sick enough to miss the office, but not sick enough to miss work entirely?)' },
+              { question: 'Is working from home an option?', description: '(Too sick for office, but can still work?)' }
+            ],
+            emoji: '💻',
+            weight: -3
+          },
+          sleep: {
+            id: 'sleep',
+            variants: [
+              { question: 'Did you get fewer than 3 hours of sleep due to illness?', description: "(Insomnia from stress doesn't count, sorry)" },
+              { question: 'Are you running on almost no sleep because you're sick?', description: '(Actual illness, not just stress)' }
+            ],
+            emoji: '😴',
+            weight: 4
+          },
+          meds: {
+            id: 'meds',
+            variants: [
+              { question: 'Are you on medication that impairs your ability to work safely?', description: '(Heavy painkillers, drowsy antihistamines, etc.)' },
+              { question: 'Would your medication make you unsafe at work?', description: '(Drowsiness, impairment, etc.)' }
+            ],
+            emoji: '💊',
+            weight: 4
+          },
+          monday: {
+            id: 'monday',
+            variants: [
+              { question: 'Is it a Monday or Friday?', description: '(Just adding context. No judgment. Totally judgment.)' },
+              { question: 'Does this happen to be a Monday or Friday?', description: '(We're just asking. No judgment. Much judgment.)' }
+            ],
+            emoji: '📆',
+            weight: -1
+          },
+          yesterday: {
+            id: 'yesterday',
+            variants: [
+              { question: 'Did you go out last night?', description: "(We're not saying it's a hangover. We're just... noting it.)" },
+              { question: 'Were you out drinking last night?', description: '(Just for context. Totally not judging.)' }
+            ],
+            emoji: '🍻',
+            weight: -2
+          },
+          doctor: {
+            id: 'doctor',
+            variants: [
+              { question: 'Have you been told by a doctor to rest?' },
+              { question: 'Did a medical professional say you should stay home?' }
+            ],
+            emoji: '👨‍⚕️',
+            weight: 5
+          },
+          colleagues: {
+            id: 'colleagues',
+            variants: [
+              { question: 'Would your presence put colleagues at risk?', description: '(Sneezing on everyone definitely counts)' },
+              { question: 'Are you a walking biohazard to your coworkers?', description: '(Contagious = stay away)' }
+            ],
+            emoji: '😷',
+            weight: 4
+          }
+        };
+
+        const workQuestions = Object.keys(workQuestionBank).map(key => {
+          const q = workQuestionBank[key];
+          const chosen = pickVariant(q.variants);
+          return { id: q.id, question: chosen.question, description: chosen.description, emoji: q.emoji, weight: q.weight };
+        });
 
         const getWorkVerdict = (answers) => {
           let score = 0;
@@ -301,20 +566,122 @@
         };
 
         // ─── ADULT SOCIAL QUIZ ─────────────────────────────────────────────────────
-        const socialQuestions = [
-          { id: 'sick', question: 'Are you genuinely sick or in physical pain?', emoji: '🤒', weight: 6, description: '(fever, injury, actual illness — not just tired)' },
-          { id: 'obligated', question: 'Did you RSVP or make a firm commitment to be there?', emoji: '📩', weight: -3, description: '(Someone is counting on your presence specifically)' },
-          { id: 'dread', question: 'Have you been dreading this event for weeks?', emoji: '😬', weight: 2, description: '(Genuine dread, not normal pre-social jitters)' },
-          { id: 'energy', question: 'Is your social battery completely dead?', emoji: '🪫', weight: 3, description: '(Introvert emergency. Burnout is real.)' },
-          { id: 'important', question: 'Is this event important to someone you really care about?', emoji: '❤️', weight: -4, description: "(Their birthday, their big moment, their thing — not just a casual hangout)" },
-          { id: 'cancel', question: 'Have you already cancelled on this person or group recently?', emoji: '🚫', weight: -3, description: '(More than once in the last month = worth noting)' },
-          { id: 'fomo', question: 'Will you actually regret missing this?', emoji: '😔', weight: -3, description: '(Honest gut check — not in-the-moment regret, actual regret)' },
-          { id: 'alternative', question: 'Do you have a genuinely good reason or prior commitment?', emoji: '📋', weight: 3, description: '(Not "I might be tired" — an actual thing)' },
-          { id: 'peoplepleasing', question: 'Are you only going out of guilt or people-pleasing?', emoji: '😰', weight: 2, description: '(No shade — this is actually a valid reason to skip)' },
-          { id: 'couch', question: 'Honestly — is the couch calling louder than the event?', emoji: '🛋️', weight: 1, description: '(Sometimes valid. Sometimes avoidance. Which is this?)' },
-          { id: 'mentalhealth', question: 'Will your mental health genuinely be worse if you go?', emoji: '🧠', weight: 4, description: '(Not just uncomfortable — actually harmful to your wellbeing)' },
-          { id: 'rain', question: "Is the main reason it's cold or raining outside?", emoji: '🌧️', weight: -2, description: '(Bold of you to admit that. Points deducted for weather crimes.)' }
-        ];
+        const socialQuestionBank = {
+          sick: {
+            id: 'sick',
+            variants: [
+              { question: 'Are you genuinely sick or in physical pain?', description: '(fever, injury, actual illness — not just tired)' },
+              { question: 'Do you have a legitimate physical reason to stay home?', description: '(real sickness or injury)' }
+            ],
+            emoji: '🤒',
+            weight: 6
+          },
+          obligated: {
+            id: 'obligated',
+            variants: [
+              { question: 'Did you RSVP or make a firm commitment to be there?', description: '(Someone is counting on your presence specifically)' },
+              { question: 'Did you promise someone you'd show up?', description: '(A real commitment was made)' }
+            ],
+            emoji: '📩',
+            weight: -3
+          },
+          dread: {
+            id: 'dread',
+            variants: [
+              { question: 'Have you been dreading this event for weeks?', description: '(Genuine dread, not normal pre-social jitters)' },
+              { question: 'Has the thought of this been stressing you out?', description: '(More than typical pre-event nerves)' }
+            ],
+            emoji: '😬',
+            weight: 2
+          },
+          energy: {
+            id: 'energy',
+            variants: [
+              { question: 'Is your social battery completely dead?', description: '(Introvert emergency. Burnout is real.)' },
+              { question: 'Are you completely socially drained?', description: '(Running on empty, not just tired)' }
+            ],
+            emoji: '🪫',
+            weight: 3
+          },
+          important: {
+            id: 'important',
+            variants: [
+              { question: 'Is this event important to someone you really care about?', description: "(Their birthday, their big moment, their thing — not just a casual hangout)" },
+              { question: 'Does this matter a lot to someone close to you?', description: '(Their special occasion or milestone)' }
+            ],
+            emoji: '❤️',
+            weight: -4
+          },
+          cancel: {
+            id: 'cancel',
+            variants: [
+              { question: 'Have you already cancelled on this person or group recently?', description: '(More than once in the last month = worth noting)' },
+              { question: 'Is this becoming a pattern of bailing?', description: '(Multiple cancellations lately?)' }
+            ],
+            emoji: '🚫',
+            weight: -3
+          },
+          fomo: {
+            id: 'fomo',
+            variants: [
+              { question: 'Will you actually regret missing this?', description: '(Honest gut check — not in-the-moment regret, actual regret)' },
+              { question: 'Will you wish you went tomorrow?', description: '(Real future regret, not just FOMO)' }
+            ],
+            emoji: '😔',
+            weight: -3
+          },
+          alternative: {
+            id: 'alternative',
+            variants: [
+              { question: 'Do you have a genuinely good reason or prior commitment?', description: '(Not "I might be tired" — an actual thing)' },
+              { question: 'Is there a legitimate conflict or reason to skip?', description: '(Real obligation, not just preference)' }
+            ],
+            emoji: '📋',
+            weight: 3
+          },
+          peoplepleasing: {
+            id: 'peoplepleasing',
+            variants: [
+              { question: 'Are you only going out of guilt or people-pleasing?', description: '(No shade — this is actually a valid reason to skip)' },
+              { question: 'Would you only go because you feel obligated?', description: '(Not because you want to)' }
+            ],
+            emoji: '😰',
+            weight: 2
+          },
+          couch: {
+            id: 'couch',
+            variants: [
+              { question: 'Honestly — is the couch calling louder than the event?', description: '(Sometimes valid. Sometimes avoidance. Which is this?)' },
+              { question: 'Are you just really drawn to staying in tonight?', description: '(Is this rest or avoidance?)' }
+            ],
+            emoji: '🛋️',
+            weight: 1
+          },
+          mentalhealth: {
+            id: 'mentalhealth',
+            variants: [
+              { question: 'Will your mental health genuinely be worse if you go?', description: '(Not just uncomfortable — actually harmful to your wellbeing)' },
+              { question: 'Would going actually harm your emotional wellbeing?', description: '(More than just uncomfortable)' }
+            ],
+            emoji: '🧠',
+            weight: 4
+          },
+          rain: {
+            id: 'rain',
+            variants: [
+              { question: "Is the main reason it's cold or raining outside?", description: '(Bold of you to admit that. Points deducted for weather crimes.)' },
+              { question: 'Is bad weather your main excuse?', description: '(Really? That's all you got?)' }
+            ],
+            emoji: '🌧️',
+            weight: -2
+          }
+        };
+
+        const socialQuestions = Object.keys(socialQuestionBank).map(key => {
+          const q = socialQuestionBank[key];
+          const chosen = pickVariant(q.variants);
+          return { id: q.id, question: chosen.question, description: chosen.description, emoji: q.emoji, weight: q.weight };
+        });
 
         const getSocialVerdict = (answers) => {
           let score = 0;
@@ -329,10 +696,10 @@
         const AdultModeSelector = ({ onSelect, onBack }) => (
           <div style={{ minHeight: 'calc(100vh - 80px)', background: 'linear-gradient(135deg, #1e293b 0%, #334155 100%)', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '40px 20px' }}>
             <div style={{ maxWidth: '700px', width: '100%', textAlign: 'center', animation: 'slideUp 0.5s ease-out' }}>
-              <div style={{ fontSize: '80px', marginBottom: '20px' }}>🤔</div>
-              <h1 style={{ fontFamily: '"Fredoka", sans-serif', fontSize: '48px', color: 'white', marginBottom: '16px', fontWeight: '700' }}>What are you trying to skip?</h1>
-              <p style={{ fontSize: '18px', color: '#94a3b8', marginBottom: '50px' }}>No judgment. Well... a little. We'll help you figure it out.</p>
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '24px', marginBottom: '40px' }}>
+              <div className="mobile-emoji-large" style={{ fontSize: '80px', marginBottom: '20px' }}>🤔</div>
+              <h1 className="hero-title" style={{ fontFamily: '"Fredoka", sans-serif', fontSize: '48px', color: 'white', marginBottom: '16px', fontWeight: '700' }}>What are you trying to skip?</h1>
+              <p className="hero-subtitle" style={{ fontSize: '18px', color: '#94a3b8', marginBottom: '50px' }}>No judgment. Well... a little. We'll help you figure it out.</p>
+              <div className="grid-2-cols" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '24px', marginBottom: '40px' }}>
                 {[
                   { id: 'work', emoji: '💼', label: 'Work / Job', desc: "Calling in sick, working from home, or just... not going in today.", from: '#0ea5e9', to: '#6366f1' },
                   { id: 'social', emoji: '🎉', label: 'Social Event', desc: "Party, dinner, hangout, family thing — something you said yes to but now... hmm.", from: '#f97316', to: '#ec4899' }
@@ -340,7 +707,7 @@
                   <button key={opt.id} onClick={() => onSelect(opt.id)} style={{ background: 'white', border: '3px solid transparent', borderRadius: '20px', padding: '40px 30px', cursor: 'pointer', textAlign: 'center', transition: 'all 0.25s', boxShadow: '0 8px 30px rgba(0,0,0,0.2)' }}
                     onMouseEnter={(e) => { e.currentTarget.style.transform = 'translateY(-6px)'; e.currentTarget.style.boxShadow = '0 16px 40px rgba(0,0,0,0.3)'; e.currentTarget.style.borderColor = opt.from; }}
                     onMouseLeave={(e) => { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.boxShadow = '0 8px 30px rgba(0,0,0,0.2)'; e.currentTarget.style.borderColor = 'transparent'; }}>
-                    <div style={{ fontSize: '60px', marginBottom: '16px' }}>{opt.emoji}</div>
+                    <div className="mobile-emoji" style={{ fontSize: '60px', marginBottom: '16px' }}>{opt.emoji}</div>
                     <div style={{ fontFamily: '"Fredoka", sans-serif', fontSize: '26px', fontWeight: '700', color: '#1f2937', marginBottom: '12px' }}>{opt.label}</div>
                     <div style={{ fontSize: '15px', color: '#6b7280', lineHeight: '1.5' }}>{opt.desc}</div>
                   </button>
@@ -369,9 +736,9 @@
           return (
             <div style={{ minHeight: 'calc(100vh - 80px)', background: 'linear-gradient(160deg, #0f172a 0%, #1e293b 40%, #312e81 100%)', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '40px 20px' }}>
               <div style={{ maxWidth: '820px', width: '100%', textAlign: 'center', animation: 'fadeIn 0.7s ease-out' }}>
-                <div style={{ fontSize: '90px', marginBottom: '24px', animation: 'bounce 3s infinite' }}>🏠</div>
-                <h1 style={{ fontFamily: '"Fredoka", sans-serif', fontSize: '64px', color: 'white', marginBottom: '16px', fontWeight: '700', lineHeight: '1.1' }}>Can I Stay Home?</h1>
-                <p style={{ fontSize: '20px', color: '#94a3b8', marginBottom: '20px', lineHeight: '1.6' }}>
+                <div className="mobile-emoji-large" style={{ fontSize: '90px', marginBottom: '24px', animation: 'bounce 3s infinite' }}>🏠</div>
+                <h1 className="hero-title" style={{ fontFamily: '"Fredoka", sans-serif', fontSize: '64px', color: 'white', marginBottom: '16px', fontWeight: '700', lineHeight: '1.1' }}>Can I Stay Home?</h1>
+                <p className="hero-subtitle" style={{ fontSize: '20px', color: '#94a3b8', marginBottom: '20px', lineHeight: '1.6' }}>
                   The honest reality check — for every age.<br />Who's asking?
                 </p>
                 
@@ -382,7 +749,7 @@
                   </p>
                 </div>
 
-                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '28px', marginBottom: '50px' }}>
+                <div className="grid-2-cols" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '28px', marginBottom: '50px' }}>
                 {[
                   { id: 'kids', emoji: '🎒', label: "I'm a Kid", sublabel: '(or a parent asking for one)', desc: "School check-up. Are the symptoms real or is it a classic case of the Mondays?", from: '#667eea', to: '#764ba2', badge: 'Ages 5–17' },
                   { id: 'adults', emoji: '☕', label: "I'm an Adult", sublabel: '(allegedly)', desc: "Work or social event? Let's figure out if this is legit or a couch conspiracy.", from: '#0ea5e9', to: '#ec4899', badge: 'Ages 18+' }
@@ -407,7 +774,7 @@
         // ─── ABOUT PAGE ────────────────────────────────────────────────────────────
         const AboutPage = () => (
           <div style={{ minHeight: 'calc(100vh - 80px)', background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)', padding: '60px 20px' }}>
-            <div style={{ maxWidth: '800px', margin: '0 auto', background: 'white', borderRadius: '24px', padding: '60px 50px', boxShadow: '0 20px 60px rgba(0,0,0,0.3)' }}>
+            <div className="mobile-padding" style={{ maxWidth: '800px', margin: '0 auto', background: 'white', borderRadius: '24px', padding: '60px 50px', boxShadow: '0 20px 60px rgba(0,0,0,0.3)' }}>
               <h1 style={{ fontFamily: '"Fredoka", sans-serif', fontSize: '48px', color: '#1f2937', marginBottom: '30px', textAlign: 'center' }}>About This Tool</h1>
               <div style={{ fontSize: '18px', lineHeight: '1.8', color: '#374151', marginBottom: '40px' }}>
                 <p style={{ marginBottom: '20px' }}><strong>Can I Stay Home?</strong> started as a tool for kids and parents navigating those tricky sick-day calls. It's grown into something for adults too — because let's be honest, we never really stop needing a sanity check.</p>
@@ -445,7 +812,7 @@
           ];
           return (
             <div style={{ minHeight: 'calc(100vh - 80px)', background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)', padding: '60px 20px' }}>
-              <div style={{ maxWidth: '800px', margin: '0 auto', background: 'white', borderRadius: '24px', padding: '60px 50px', boxShadow: '0 20px 60px rgba(0,0,0,0.3)' }}>
+              <div className="mobile-padding" style={{ maxWidth: '800px', margin: '0 auto', background: 'white', borderRadius: '24px', padding: '60px 50px', boxShadow: '0 20px 60px rgba(0,0,0,0.3)' }}>
                 <h1 style={{ fontFamily: '"Fredoka", sans-serif', fontSize: '48px', color: '#1f2937', marginBottom: '20px', textAlign: 'center' }}>Frequently Asked Questions</h1>
                 <p style={{ fontSize: '18px', color: '#6b7280', textAlign: 'center', marginBottom: '50px' }}>Got questions? We've got answers.</p>
                 <div style={{ display: 'grid', gap: '16px' }}>
@@ -467,7 +834,7 @@
         // ─── PRIVACY POLICY PAGE ──────────────────────────────────────────────────
         const PrivacyPage = () => (
           <div style={{ minHeight: 'calc(100vh - 80px)', background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)', padding: '60px 20px' }}>
-            <div style={{ maxWidth: '800px', margin: '0 auto', background: 'white', borderRadius: '24px', padding: '60px 50px', boxShadow: '0 20px 60px rgba(0,0,0,0.3)' }}>
+            <div className="mobile-padding" style={{ maxWidth: '800px', margin: '0 auto', background: 'white', borderRadius: '24px', padding: '60px 50px', boxShadow: '0 20px 60px rgba(0,0,0,0.3)' }}>
               <h1 style={{ fontFamily: '"Fredoka", sans-serif', fontSize: '48px', color: '#1f2937', marginBottom: '10px', textAlign: 'center' }}>Privacy Policy</h1>
               <p style={{ fontSize: '14px', color: '#9ca3af', textAlign: 'center', marginBottom: '40px' }}>Last updated: February 2026</p>
 
@@ -508,11 +875,11 @@
 
         // ─── FOOTER ────────────────────────────────────────────────────────────────
         const Footer = ({ setCurrentPage }) => (
-          <footer style={{ background: '#0f172a', padding: '30px 40px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '16px' }}>
-            <div style={{ fontFamily: '"Fredoka", sans-serif', fontSize: '18px', color: '#94a3b8' }}>
-              🏠 Can I Stay Home? · <span style={{ fontSize: '14px' }}>www.canistayhome.com</span>
+          <footer style={{ background: '#0f172a', padding: '30px 20px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '16px' }}>
+            <div style={{ fontFamily: '"Fredoka", sans-serif', fontSize: '16px', color: '#94a3b8', width: '100%', textAlign: 'center' }}>
+              🏠 Can I Stay Home? · <span style={{ fontSize: '13px' }}>www.canistayhome.com</span>
             </div>
-            <div style={{ display: 'flex', gap: '24px', flexWrap: 'wrap' }}>
+            <div style={{ display: 'flex', gap: '20px', flexWrap: 'wrap', justifyContent: 'center', width: '100%' }}>
               {[['About', 'about'], ['FAQ', 'faq'], ['Privacy Policy', 'privacy']].map(([label, page]) => (
                 <button key={page} onClick={() => setCurrentPage(page)} style={{ background: 'transparent', border: 'none', color: '#64748b', fontSize: '14px', cursor: 'pointer', fontFamily: '"Space Mono", monospace', transition: 'color 0.2s' }}
                   onMouseEnter={(e) => e.target.style.color = '#94a3b8'}
@@ -521,7 +888,7 @@
                 </button>
               ))}
             </div>
-            <p style={{ margin: 0, fontSize: '12px', color: '#334155', width: '100%', textAlign: 'center' }}>
+            <p style={{ margin: 0, fontSize: '11px', color: '#334155', width: '100%', textAlign: 'center', lineHeight: '1.5' }}>
               Not medical advice. Not HR policy. Just an honest quiz. · As an Amazon Associate we earn from qualifying purchases.
             </p>
           </footer>
