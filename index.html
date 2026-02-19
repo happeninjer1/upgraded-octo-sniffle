@@ -103,8 +103,24 @@
           </nav>
         );
 
+        // Generate questions once at module load to avoid re-rendering issues
+        const generateQuestions = (questionBank) => {
+          return Object.keys(questionBank).map(key => {
+            const q = questionBank[key];
+            const chosen = pickVariant(q.variants);
+            return {
+              id: q.id,
+              question: chosen.question,
+              description: chosen.description,
+              emoji: q.emoji,
+              weight: q.weight
+            };
+          });
+        };
+
         // ─── SHARED QUIZ SHELL ─────────────────────────────────────────────────────
-        const QuizShell = ({ questions, getVerdict, onReset, accentFrom, accentTo, disclaimer, showAffiliateLinks = false }) => {
+        const QuizShell = ({ questionBank, getVerdict, onReset, accentFrom, accentTo, disclaimer, showAffiliateLinks = false }) => {
+          const [questions] = React.useState(() => generateQuestions(questionBank));
           const [currentQuestion, setCurrentQuestion] = useState(null);
           const [answers, setAnswers] = useState({});
           const [showResult, setShowResult] = useState(false);
@@ -417,21 +433,11 @@
           }
         };
 
-        const kidsQuestions = Object.keys(kidsQuestionBank).map(key => {
-          const q = kidsQuestionBank[key];
-          const chosen = pickVariant(q.variants);
-          return {
-            id: q.id,
-            question: chosen.question,
-            description: chosen.description,
-            emoji: q.emoji,
-            weight: q.weight
-          };
-        });
-
         const getKidsVerdict = (answers) => {
           let score = 0;
-          kidsQuestions.forEach(q => { if (answers[q.id]) score += q.weight; });
+          Object.keys(kidsQuestionBank).forEach(key => {
+            if (answers[kidsQuestionBank[key].id]) score += kidsQuestionBank[key].weight;
+          });
           if (score >= 10) return { verdict: 'STAY HOME', color: '#dc2626', emoji: '🏠', message: "Yeah, you should probably stay home. You're dealing with some legit symptoms that either mean you're contagious or you genuinely need rest.", advice: "Rest up, drink fluids, and get better. If symptoms get worse, tell a parent to call the doctor." };
           if (score >= 5) return { verdict: 'MAYBE STAY HOME', color: '#f59e0b', emoji: '🤔', message: "This one's borderline. You have some symptoms, but not the really serious ones.", advice: "Talk it over with your parents. If you feel worse as the morning goes on, definitely stay home." };
           if (score >= 1) return { verdict: 'PROBABLY GO TO SCHOOL', color: '#2563eb', emoji: '🎒', message: "You're not feeling 100%, but it's not bad enough to skip. You can probably make it through the day.", advice: "Take it easy today. Let your teacher know if you start feeling worse." };
@@ -550,15 +556,11 @@
           }
         };
 
-        const workQuestions = Object.keys(workQuestionBank).map(key => {
-          const q = workQuestionBank[key];
-          const chosen = pickVariant(q.variants);
-          return { id: q.id, question: chosen.question, description: chosen.description, emoji: q.emoji, weight: q.weight };
-        });
-
         const getWorkVerdict = (answers) => {
           let score = 0;
-          workQuestions.forEach(q => { if (answers[q.id]) score += q.weight; });
+          Object.keys(workQuestionBank).forEach(key => {
+            if (answers[workQuestionBank[key].id]) score += workQuestionBank[key].weight;
+          });
           if (score >= 12) return { verdict: 'STAY HOME', color: '#dc2626', emoji: '🛌', message: "You're actually unwell. Your body is filing a formal complaint and HR would side with it. Rest.", advice: "Send the email, set the out-of-office, and lie down. The company survived before you and it'll manage today." };
           if (score >= 7) return { verdict: 'CONSIDER STAYING HOME', color: '#f59e0b', emoji: '🤔', message: "You're in the grey zone. Not 'call an ambulance' sick, but not 'fully operational' either.", advice: "If you can work from home, do that. If you must be in-person, consider whether you'd be more liability than asset today." };
           if (score >= 3) return { verdict: 'PROBABLY GO IN', color: '#2563eb', emoji: '💼', message: "You're under the weather but functional. Tough it out — with snacks and tea.", advice: "Hydrate, grab some DayQuil, and manage your energy. But don't sneeze on anyone. Seriously." };
@@ -677,15 +679,11 @@
           }
         };
 
-        const socialQuestions = Object.keys(socialQuestionBank).map(key => {
-          const q = socialQuestionBank[key];
-          const chosen = pickVariant(q.variants);
-          return { id: q.id, question: chosen.question, description: chosen.description, emoji: q.emoji, weight: q.weight };
-        });
-
         const getSocialVerdict = (answers) => {
           let score = 0;
-          socialQuestions.forEach(q => { if (answers[q.id]) score += q.weight; });
+          Object.keys(socialQuestionBank).forEach(key => {
+            if (answers[socialQuestionBank[key].id]) score += socialQuestionBank[key].weight;
+          });
           if (score >= 9) return { verdict: 'SKIP IT', color: '#dc2626', emoji: '🛋️', message: "You have real reasons to stay home. Your wellbeing matters more than attendance. Honour that.", advice: "Send a kind message, be honest if you can, and rest without guilt. Real friends get it. And if they don't — that's also useful information." };
           if (score >= 4) return { verdict: 'YOUR CALL', color: '#f59e0b', emoji: '🤷', message: "It's genuinely 50/50. You're not obligated, but you're not suffering either. This one's on you.", advice: "If you go, commit and try to enjoy it. If you stay home, do something that actually restores you — not just guilt-scrolling on the couch." };
           if (score >= 0) return { verdict: 'PROBABLY GO', color: '#2563eb', emoji: '🎉', message: "You want to want to stay home, but the signs point to going. You'll probably have a better time than you think.", advice: "Give it an hour. You can always leave early. The anticipation is usually worse than the thing itself." };
@@ -908,17 +906,17 @@
             if (currentPage === 'privacy') return <PrivacyPage />;
             if (!mode) return <HomePage onSelect={setMode} />;
             if (mode === 'kids') return (
-              <QuizShell questions={kidsQuestions} getVerdict={getKidsVerdict} onReset={() => setMode(null)}
+              <QuizShell questionBank={kidsQuestionBank} getVerdict={getKidsVerdict} onReset={() => setMode(null)}
                 accentFrom="#667eea" accentTo="#764ba2" disclaimer="💡 For parents: This is a fun tool, not medical advice. Trust your parental instincts!" />
             );
             if (mode === 'adults') {
               if (!adultMode) return <AdultModeSelector onSelect={setAdultMode} onBack={() => setMode(null)} />;
               if (adultMode === 'work') return (
-                <QuizShell questions={workQuestions} getVerdict={getWorkVerdict} onReset={() => setAdultMode(null)}
+                <QuizShell questionBank={workQuestionBank} getVerdict={getWorkVerdict} onReset={() => setAdultMode(null)}
                   accentFrom="#0ea5e9" accentTo="#6366f1" disclaimer="Not a doctor. Not your HR department. Just a vibe check." showAffiliateLinks={true} />
               );
               if (adultMode === 'social') return (
-                <QuizShell questions={socialQuestions} getVerdict={getSocialVerdict} onReset={() => setAdultMode(null)}
+                <QuizShell questionBank={socialQuestionBank} getVerdict={getSocialVerdict} onReset={() => setAdultMode(null)}
                   accentFrom="#f97316" accentTo="#ec4899" disclaimer="Not a therapist. Just a mirror. Be honest with yourself. 🪞" showAffiliateLinks={true} />
               );
             }
