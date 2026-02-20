@@ -80,6 +80,7 @@
           const [answers, setAnswers] = useState({});
           const [showResult, setShowResult] = useState(false);
           const [totalChecks, setTotalChecks] = useState(null);
+          const [showShareMenu, setShowShareMenu] = useState(false);
           const gradient = `linear-gradient(135deg, ${accentFrom} 0%, ${accentTo} 100%)`;
 
           // Counter with Google Analytics tracking
@@ -120,8 +121,6 @@
 
           if (showResult) {
             const result = getVerdict(answers);
-            
-            const [showShareMenu, setShowShareMenu] = React.useState(false);
             
             const shareResults = () => {
               setShowShareMenu(!showShareMenu);
