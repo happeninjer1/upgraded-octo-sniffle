@@ -124,29 +124,39 @@
             const shareResults = () => {
               const shareText = `I just took the "Can I Stay Home?" quiz and got: ${result.verdict}! 🏠`;
               const shareUrl = 'https://www.canistayhome.com';
+              const fullMessage = `${shareText}\n\n${shareUrl}`;
               
               // Try native share first (works on mobile)
               if (navigator.share) {
                 navigator.share({
                   title: 'Can I Stay Home?',
-                  text: shareText,
-                  url: shareUrl
+                  text: fullMessage
                 }).catch(() => {
                   // If share fails, fall back to clipboard
-                  copyToClipboard(shareText + ' ' + shareUrl);
+                  copyToClipboard(fullMessage);
                 });
               } else {
                 // Desktop: copy to clipboard
-                copyToClipboard(shareText + ' ' + shareUrl);
+                copyToClipboard(fullMessage);
               }
             };
 
             const copyToClipboard = (text) => {
               navigator.clipboard.writeText(text).then(() => {
-                alert('✓ Copied to clipboard! Share it anywhere you like.');
+                alert('✓ Result copied to clipboard!\n\nYou can now paste it in any message or social media post.');
               }).catch(() => {
-                // Fallback if clipboard API fails
-                alert('Share this: ' + text);
+                // Fallback for older browsers
+                const textArea = document.createElement('textarea');
+                textArea.value = text;
+                document.body.appendChild(textArea);
+                textArea.select();
+                try {
+                  document.execCommand('copy');
+                  alert('✓ Result copied! Paste it wherever you like.');
+                } catch (err) {
+                  alert('Share this:\n\n' + text);
+                }
+                document.body.removeChild(textArea);
               });
             };
             
